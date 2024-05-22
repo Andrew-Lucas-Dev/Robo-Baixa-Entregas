@@ -90,7 +90,17 @@ def click_nota(image_path, confidence=0.8):
 #     except Exception as e:
 #         print(f"Erro ao converter o arquivo: {e}")
 
-Planilha_OBA = pd.read_excel("arquivotxt.xlsx")
+# Planilha_OBA = pd.read_excel("arquivotxt.xlsx")
+
+# Ler o arquivo CSV com a codificação correta
+try:
+    Planilha_Obba = pd.read_csv("e88e679c26037377383d8ad3df789ad0baac5a30.csv", delimiter=",", encoding='ISO-8859-1')
+except UnicodeDecodeError:
+    # Tente outra codificação se a primeira falhar
+    Planilha_Obba = pd.read_csv("e88e679c26037377383d8ad3df789ad0baac5a30.csv", delimiter=",", encoding='Windows-1252')
+# Verificar se os dados foram lidos corretamente
+
+#print(Planilha_Obba)
 
 # Ler o arquivo CSV com a codificação correta
 try:
@@ -104,9 +114,9 @@ Planilha_CACAU = pd.read_excel("BAIXAS CACAU SHOW.xlsx", skiprows=6)
 
 # Selecionar as colunas com os números das notas fiscais
 coluna_notas_1 = 'Documento'  # Substitua pelo nome da coluna na primeira planilha
-coluna_data_emissao_1 = 'Emissão'
+coluna_data_emissao_1 = 'EmissÃ£o'
 coluna_status_1 = 'Status'
-coluna_finalizacao_1 = '""Data Finalização""'
+coluna_finalizacao_1 = 'Data FinalizaÃ§Ã£o'
 
 coluna_notas_2 = 'NF'          # Substitua pelo nome da coluna na segunda planilha
 coluna_data_emissao_2 = 'Emissão'
@@ -119,7 +129,7 @@ coluna_status_3 = 'Status'
 coluna_finalizacao_3 = 'Data de Entrega'
 
 # Criar DataFrames apenas com a coluna de notas fiscais
-notas_df1 = Planilha_OBA[[coluna_notas_1, coluna_data_emissao_1,coluna_status_1,coluna_finalizacao_1]].rename(columns={coluna_notas_1: 'NumeroNotaFiscal', coluna_data_emissao_1: 'DataNotaFiscal', coluna_status_1: 'Status',coluna_finalizacao_1: 'DataEntrega'})
+notas_df1 = Planilha_Obba[[coluna_notas_1, coluna_data_emissao_1,coluna_status_1,coluna_finalizacao_1]].rename(columns={coluna_notas_1: 'NumeroNotaFiscal', coluna_data_emissao_1: 'DataNotaFiscal', coluna_status_1: 'Status',coluna_finalizacao_1: 'DataEntrega'})
 notas_df2 = Planilha_Dori[[coluna_notas_2, coluna_data_emissao_2,coluna_status_2,coluna_finalizacao_2]].rename(columns={coluna_notas_2: 'NumeroNotaFiscal', coluna_data_emissao_2: 'DataNotaFiscal', coluna_status_2: 'Status',coluna_finalizacao_2: 'DataEntrega'})
 notas_df3 = Planilha_CACAU[[coluna_notas_3, coluna_data_emissao_3,coluna_status_3,coluna_finalizacao_3]].rename(columns={coluna_notas_3: 'NumeroNotaFiscal', coluna_data_emissao_3: 'DataNotaFiscal', coluna_status_3: 'Status',coluna_finalizacao_3: 'DataEntrega'})
 
@@ -135,10 +145,7 @@ notas_df3['DataEntrega'] = pd.to_datetime(notas_df3['DataEntrega'], dayfirst=Tru
 
 # Concatenar os DataFrames
 df_concatenado = pd.concat([notas_df1, notas_df2, notas_df3], ignore_index=True)
-
-i = 0
-
-
+print(df_concatenado)
 # # #LOGIN
 # pyautogui.press("capslock")  # Desativa o CAPS LOCK se estiver ativado
 # # # pyautogui.keyDown('win')
@@ -180,7 +187,7 @@ i = 0
 # click_image('ok_aviso.png')
 # click_image('gerar_ocorrencia.png')
 
-
+i = 0
 for linha in df_concatenado.index:
     nf = df_concatenado.loc[linha,'NumeroNotaFiscal'] 
     status = df_concatenado.loc[linha,'Status']
@@ -189,7 +196,7 @@ for linha in df_concatenado.index:
     data_baixa = df_concatenado.loc[linha,'DataEntrega']   
     if status == 'Entregue' or status == 'Entregue com ocorrência' or status == 'Entregue sem ocorrência':
         data_baixa = data_baixa.strftime('%d/%m/%Y')
-        if data_baixa == data_ontem: #rodar com a data da baixa do dia anterior
+        if data_baixa == '10/05/2024':#data_ontem: #rodar com a data da baixa do dia anterior
             print(f"nf:{nf}  status:{status}  data emissao:{data_emissao} data baixa:{data_baixa}")
             i += 1
             
