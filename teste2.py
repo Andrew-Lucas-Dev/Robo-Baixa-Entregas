@@ -1,15 +1,15 @@
 import pandas as pd
+from openpyxl import load_workbook
 import os
+import numpy as np
 import pyautogui
-from datetime import datetime, timedelta
+import ctypes
 
 caminho = os.getcwd() 
 caminho_sistema = caminho.replace("C", "T", 1)
 
-data_ontem = datetime.now().date() - timedelta(days=1)
-data_ontem = data_ontem.strftime("%d/%m/%Y")
 
-def click_image(image_path, confidence=0.8):
+def click_image(image_path, confidence=0.9):
     # Construir o caminho completo para a imagem
     current_dir = os.path.dirname(__file__)  # Diretório atual do script
     caminho_imagem = caminho + r'\IMAGENS'
@@ -27,7 +27,43 @@ def click_image(image_path, confidence=0.8):
             print("Imagem não encontrada na tela. Aguardando...")
         pyautogui.sleep(1)
 
-def click_nota(image_path, confidence=0.8):
+def verificar_campo(image_name, confidence=0.9):
+    # Construir o caminho completo para a imagem
+    current_dir = os.path.dirname(__file__)  # Diretório atual do script
+    caminho_imagem = os.path.join(current_dir, 'IMAGENS')
+    image_path = os.path.join(caminho_imagem, image_name)    
+    while True:
+        found = False
+        for i in range(5): 
+            try:
+                position = pyautogui.locateOnScreen(image_path, confidence=confidence)
+                if position:
+                    print("Campo preenchido.")
+                    found = True
+                    break
+            except Exception as e:
+                print(f"Erro ao procurar o campo: {e}")
+            print("Campo não preenchido. Aguardando...")
+            pyautogui.sleep(1)       
+        if found:
+            break
+        else:
+            # Se não encontrou após 5 tentativas, realiza as ações adicionais
+            click_image('salvar_filial.png')
+            pyautogui.press("backspace")
+            pyautogui.write("1")
+            pyautogui.sleep(1)   
+            pyautogui.press("tab")
+            pyautogui.press("backspace")
+            pyautogui.write("1")
+            pyautogui.sleep(1)   
+            pyautogui.press("tab")
+            pyautogui.press("backspace")
+            pyautogui.write("1")
+            pyautogui.sleep(1)   
+            pyautogui.press("tab")
+
+def click_nota(image_path, confidence=0.9):
     # Construir o caminho completo para a imagem
     current_dir = os.path.dirname(__file__)  # Diretório atual do script
     caminho_imagem = caminho + r'\IMAGENS'
@@ -46,113 +82,47 @@ def click_nota(image_path, confidence=0.8):
             print("Imagem não encontrada na tela. Aguardando...")
         pyautogui.sleep(1)
 
-# # Caminho para o arquivo TXT
-# arquivo_txt = caminho + r'\BAIXAS EBBA.txt'
-# arquivo_excel = caminho +r'\arquivotxt.xlsx'
+def check_caps_lock():
+    return ctypes.windll.user32.GetKeyState(0x14) & 0xffff != 0
 
-# # Verificar se o arquivo TXT existe
-# if not os.path.exists(arquivo_txt):
-#     print(f"Erro: O arquivo {arquivo_txt} não existe.")
-# else:
-#     try:
-#         # Tentar ler o arquivo como UTF-16
-#         try:
-#             lines = []
-#             with open(arquivo_txt, 'r', encoding='utf-16') as f:
-#                 for line in f:
-#                     lines.append(line.strip().split(','))
-#         except UnicodeError:
-#             # Se falhar, tentar ISO-8859-1
-#             lines = []
-#             with open(arquivo_txt, 'r', encoding='ISO-8859-1') as f:
-#                 for line in f:
-#                     lines.append(line.strip().split(','))
-        
-#         # Encontrar o número máximo de colunas
-#         max_columns = max(len(line) for line in lines)
-        
-#         # Adicionar campos vazios para linhas com menos colunas que o máximo
-#         for line in lines:
-#             while len(line) < max_columns:
-#                 line.append('')
-        
-#         # Transformar a lista de listas em DataFrame
-#         df = pd.DataFrame(lines[1:], columns=lines[0])
-        
-#         # Verificar o DataFrame
-#         #print(f"DataFrame lido do arquivo:\n{df.head()}")
-        
-#         # Escrever o DataFrame no arquivo Excel
-#         df.to_excel(arquivo_excel, index=False)
-        
-#         print(f"Arquivo Excel salvo em: {arquivo_excel}")
-            
-#     except Exception as e:
-#         print(f"Erro ao converter o arquivo: {e}")
+def alt_press(key):
+    pyautogui.keyDown('alt')
+    pyautogui.press(key)
+    pyautogui.keyUp('alt')
 
-# Planilha_OBA = pd.read_excel("arquivotxt.xlsx")
+# Carregar os dados dos arquivos Excel
+Planilha_1 = pd.read_excel("EntregaT2.xlsx", skiprows=4)
+Planilha_1 = Planilha_1.rename(columns={'Nota Fiscal': 'NF','Data Prevista': 'DATA NOTA FISCAL'})
+colunas_para_remover = ['Cobrou Descarga?', 'Motivo Atraso', 'Serie', 'Motivo Devolução', 'Cliente', 'Emp Carga', 'Bren', 'SP', 'Número Carga']
+Planilha_1.drop(columns=colunas_para_remover, inplace=True)
+# print(Planilha_1)
 
-# Ler o arquivo CSV com a codificação correta
-try:
-    Planilha_Obba = pd.read_csv("e88e679c26037377383d8ad3df789ad0baac5a30.csv", delimiter=",", encoding='ISO-8859-1')
-except UnicodeDecodeError:
-    # Tente outra codificação se a primeira falhar
-    Planilha_Obba = pd.read_csv("e88e679c26037377383d8ad3df789ad0baac5a30.csv", delimiter=",", encoding='Windows-1252')
-# Verificar se os dados foram lidos corretamente
+Planilha_2 = pd.read_excel("BASE_DADOS.xlsx")
+#print(Planilha_2)
 
-#print(Planilha_Obba)
+Planilha_sumare = pd.read_excel("planilha_sumare.xlsx")
+colunas_para_remover = ['Série', 'Cnpj cliente', 'N° Carga','Status da Baixa']
+Planilha_sumare.drop(columns=colunas_para_remover, inplace=True)
+Planilha_sumare = Planilha_sumare.rename(columns={'N° NF': 'NF', 'Data NF': 'DATA NOTA FISCAL', 'DATA  ENTREGA': 'Data Chegada', 'Status da entrega': 'STATUS'})
+Planilha_sumare['Data Entrega'] = Planilha_sumare['Data Chegada']
+Planilha_sumare['Fim Descarreg.'] = Planilha_sumare['Data Chegada']
+#print(Planilha_sumare)
 
-# Ler o arquivo CSV com a codificação correta
-try:
-    Planilha_Dori = pd.read_csv("BAIXAS DORI.csv", delimiter=";", encoding='ISO-8859-1')
-except UnicodeDecodeError:
-    # Tente outra codificação se a primeira falhar
-    Planilha_Dori = pd.read_csv("BAIXAS DORI.csv", delimiter=";", encoding='Windows-1252')
-# Verificar se os dados foram lidos corretamente
+# Juntar os dados das duas planilhas
+combined_df = pd.concat([Planilha_2, Planilha_1,Planilha_sumare], ignore_index=True)
+combined_df = combined_df[combined_df['STATUS'] == 'Entregue']
+combined_df = combined_df.drop_duplicates(subset='NF', keep='first')
+combined_df['BAIXADO'].fillna('NAO', inplace=True)
+#print(combined_df)
 
-Planilha_CACAU = pd.read_excel("BAIXAS CACAU SHOW.xlsx", skiprows=6)
-
-# Selecionar as colunas com os números das notas fiscais
-coluna_notas_1 = 'Documento'  # Substitua pelo nome da coluna na primeira planilha
-coluna_data_emissao_1 = 'EmissÃ£o'
-coluna_status_1 = 'Status'
-coluna_finalizacao_1 = 'Data FinalizaÃ§Ã£o'
-
-coluna_notas_2 = 'NF'          # Substitua pelo nome da coluna na segunda planilha
-coluna_data_emissao_2 = 'Emissão'
-coluna_status_2 = 'Status'
-coluna_finalizacao_2 = 'Data de baixa'
-
-coluna_notas_3 = 'Nota Fiscal'    # Substitua pelo nome da coluna na terceira planilha
-coluna_data_emissao_3 = 'Data Emissão NF-e'
-coluna_status_3 = 'Status'
-coluna_finalizacao_3 = 'Data de Entrega'
-
-# Criar DataFrames apenas com a coluna de notas fiscais
-notas_df1 = Planilha_Obba[[coluna_notas_1, coluna_data_emissao_1,coluna_status_1,coluna_finalizacao_1]].rename(columns={coluna_notas_1: 'NumeroNotaFiscal', coluna_data_emissao_1: 'DataNotaFiscal', coluna_status_1: 'Status',coluna_finalizacao_1: 'DataEntrega'})
-notas_df2 = Planilha_Dori[[coluna_notas_2, coluna_data_emissao_2,coluna_status_2,coluna_finalizacao_2]].rename(columns={coluna_notas_2: 'NumeroNotaFiscal', coluna_data_emissao_2: 'DataNotaFiscal', coluna_status_2: 'Status',coluna_finalizacao_2: 'DataEntrega'})
-notas_df3 = Planilha_CACAU[[coluna_notas_3, coluna_data_emissao_3,coluna_status_3,coluna_finalizacao_3]].rename(columns={coluna_notas_3: 'NumeroNotaFiscal', coluna_data_emissao_3: 'DataNotaFiscal', coluna_status_3: 'Status',coluna_finalizacao_3: 'DataEntrega'})
-
-# Converter as colunas de datas para o formato datetime
-notas_df1['DataNotaFiscal'] = pd.to_datetime(notas_df1['DataNotaFiscal'], dayfirst=True)
-notas_df1['DataEntrega'] = pd.to_datetime(notas_df1['DataEntrega'], dayfirst=True)
-
-notas_df2['DataNotaFiscal'] = pd.to_datetime(notas_df2['DataNotaFiscal'], dayfirst=True)
-notas_df2['DataEntrega'] = pd.to_datetime(notas_df2['DataEntrega'], dayfirst=True)
-
-notas_df3['DataNotaFiscal'] = pd.to_datetime(notas_df3['DataNotaFiscal'], dayfirst=True)
-notas_df3['DataEntrega'] = pd.to_datetime(notas_df3['DataEntrega'], dayfirst=True)
-
-# Concatenar os DataFrames
-df_concatenado = pd.concat([notas_df1, notas_df2, notas_df3], ignore_index=True)
-print(df_concatenado)
 # # #LOGIN
-# pyautogui.press("capslock")  # Desativa o CAPS LOCK se estiver ativado
-# # # pyautogui.keyDown('win')
-# # # pyautogui.press("m")
-# # # pyautogui.keyUp('win')
-# # click_image('logo_rodopar_areatrabalho.png')#PC ESCRITORIO
-# click_image('logo_rodopar_areatrabalho_casa.png')#PC CASA
+# if check_caps_lock():
+#     pyautogui.press("capslock")  # Desativa o CAPS LOCK se estiver ativado
+# pyautogui.keyDown('win')
+# pyautogui.press("m")
+# pyautogui.keyUp('win')
+# click_image('logo_rodopar_areatrabalho.png')#PC ESCRITORIO
+# #click_image('logo_rodopar_areatrabalho_casa.png')#PC CASA
 # pyautogui.click()
 # click_image('conectar_rodopar.png')
 # click_image('senha_rodopar_1.png')
@@ -163,77 +133,98 @@ print(df_concatenado)
 # pyautogui.sleep(1)
 # pyautogui.write("anascimento")
 # pyautogui.press("tab")
-# pyautogui.write("990607")
+# pyautogui.write("99060767")
 # for i in range(2): 
 #     pyautogui.press("enter")
 # click_image('escolha_filial.png')
 # pyautogui.press("enter")
 
-# click_image('botao_frota.png')
-# pyautogui.press('right')
-# pyautogui.press('down')
-# pyautogui.press('right')
-# for i in range(6): 
-#     pyautogui.press("down")
-# pyautogui.press('right')
-# pyautogui.press('enter')
-# click_image('filial_manifesto.png')
-# pyautogui.write("5")
-# pyautogui.press('tab')
-# pyautogui.write("1")
-# pyautogui.press('tab')
-# pyautogui.write("1")
-# pyautogui.press('tab')
-# click_image('ok_aviso.png')
-# click_image('gerar_ocorrencia.png')
+click_image('botao_frota.png')
+pyautogui.press("alt")
+pyautogui.press("alt")
+pyautogui.press("right")
+for i in range(2): 
+    pyautogui.press("down")
+pyautogui.press("right")
+for i in range(10): 
+    pyautogui.press("down")
+pyautogui.press("enter")
 
-i = 0
-for linha in df_concatenado.index:
-    nf = df_concatenado.loc[linha,'NumeroNotaFiscal'] 
-    status = df_concatenado.loc[linha,'Status']
-    data_emissao = df_concatenado.loc[linha,'DataNotaFiscal']
-    data_emissao = data_emissao.strftime('%d/%m/%Y')  
-    data_baixa = df_concatenado.loc[linha,'DataEntrega']   
-    if status == 'Entregue' or status == 'Entregue com ocorrência' or status == 'Entregue sem ocorrência':
-        data_baixa = data_baixa.strftime('%d/%m/%Y')
-        if data_baixa == '10/05/2024':#data_ontem: #rodar com a data da baixa do dia anterior
-            print(f"nf:{nf}  status:{status}  data emissao:{data_emissao} data baixa:{data_baixa}")
-            i += 1
-            
-            # pyautogui.sleep(2)
-            # click_image('cancelar.png')
-            # pyautogui.sleep(2)
-            # click_image('digitar_data.png')
-            # for i in range(10):
-            #     pyautogui.press("backspace")
-            # pyautogui.write(str(data_emissao))
-            # click_nota('digitar_nota.png')
-            # pyautogui.write(str(nf))
-            # click_image('atualizar.png')
-            # click_image('salvar_filial.png')    
-            # pyautogui.write("5")
-            # click_image('salvar_ocorrencia.png')
-            # pyautogui.write("1")
-            # click_image('salvar_observ.png')
-            # pyautogui.write("1")
-            # click_image('salvar_datachegada.png')
-            # for i in range(10):
-            #     pyautogui.press("backspace")
-            # pyautogui.write(str(data_baixa))
-            # pyautogui.write("17:00")
-            # pyautogui.press('tab')
-            # pyautogui.write(str(data_baixa))
-            # pyautogui.write("17:01")
-            # pyautogui.press('tab')
-            # pyautogui.write(str(data_baixa))
-            # pyautogui.write("17:02")
-            # pyautogui.press('tab')
-            # pyautogui.write("aaa")
-            # for i in range(2):
-            #     pyautogui.press("tab")
-            # pyautogui.write("111")
-            # #click_image('efetuar_baixa.png')
-            # pyautogui.sleep(1)
-            # click_image('cancelar.png')
+for linha in combined_df.index:
+    nf = combined_df.loc[linha, "NF"]
+    data_nota_fiscal = combined_df.loc[linha, "DATA NOTA FISCAL"]
+    data_chegada = combined_df.loc[linha, "Data Chegada"]   
+    data_entrega = combined_df.loc[linha, "Data Entrega"]   
+    data_fim_descarregamento =  combined_df.loc[linha, "Fim Descarreg."]  
+    baixado = str(combined_df.loc[linha, "BAIXADO"])  
 
-print(i)
+    if baixado == "SIM":
+        continue
+    else:    
+        data_chegada = data_chegada.strftime('%d/%m/%Y')
+        data_entrega = data_entrega.strftime('%d/%m/%Y')
+        data_fim_descarregamento = data_fim_descarregamento.strftime('%d/%m/%Y')
+        data_um_mes_antes = pd.to_datetime(data_entrega, format='%d/%m/%Y')
+        data_um_mes_antes = data_um_mes_antes - pd.DateOffset(weeks=2)
+        data_um_mes_antes = data_um_mes_antes.strftime('%d/%m/%Y')    
+        status = 'ENTREGUE'
+        combined_df.loc[linha, "BAIXADO"] = "SIM"
+        print(f'nota:{nf} data da nota:{data_um_mes_antes} data chegada:{data_chegada} data entrega:{data_entrega} data fim descarregamento:{data_fim_descarregamento}')
+    
+        click_image('cancelar.png')
+        click_image('digitar_data.png')
+        for i in range(10):
+            pyautogui.press("backspace")
+        pyautogui.write(str(data_um_mes_antes))
+        pyautogui.sleep(1)  
+        click_nota('digitar_nota.png')
+        pyautogui.sleep(1)
+        pyautogui.write(str(nf))
+        pyautogui.sleep(1)
+        click_image('atualizar.png')
+        pyautogui.sleep(1)
+        click_image('salvar_filial.png')
+        pyautogui.write("1")
+        pyautogui.sleep(1)       
+        click_image('salvar_ocorrencia.png')
+        pyautogui.write("1")
+        pyautogui.sleep(1)      
+        click_image('salvar_observ.png')
+        pyautogui.write("1")
+        pyautogui.sleep(1)           
+        pyautogui.press("tab")
+        verificar_campo('campo_filial.png')
+        verificar_campo('campo_observacao.png')
+        verificar_campo('campo_ocorrencia.png')
+        click_image('salvar_datachegada.png')
+        for i in range(10):
+            pyautogui.press("backspace")
+        pyautogui.write(str(data_chegada))
+        pyautogui.write("22:00")  ## 22 HORAS É UMA MARCAÇÃO ARBITRARIA DO NOSSO TIME
+        pyautogui.sleep(1)
+        pyautogui.press('tab')
+        pyautogui.write(str(data_entrega))
+        pyautogui.write("22:01")
+        pyautogui.sleep(1)
+        pyautogui.press('tab')
+        pyautogui.write(str(data_fim_descarregamento))
+        pyautogui.write("22:02")
+        pyautogui.sleep(1)
+        pyautogui.press('tab')
+        pyautogui.write("aaa")
+        pyautogui.sleep(1)
+        for i in range(2):
+            pyautogui.press("tab")
+        pyautogui.write("111")
+        pyautogui.sleep(1)
+        click_image('efetuar_baixa.png')
+        click_image('yes.png')
+        pyautogui.sleep(2)
+        click_image('yes.png')
+        pyautogui.sleep(2)
+        click_image('OK.png')
+        pyautogui.sleep(2)
+
+#print(combined_df)  
+combined_df.to_excel('BASE_DADOS.xlsx', index=False)    
+click_image('botao_voltar.png')
