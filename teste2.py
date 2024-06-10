@@ -27,6 +27,24 @@ def click_image(image_path, confidence=0.9):
             print("Imagem não encontrada na tela. Aguardando...")
         pyautogui.sleep(1)
 
+def imagem_encontrada(image_path, confidence=0.9, max_attempts=5):
+    # Construir o caminho completo para a imagem
+    current_dir = os.path.dirname(__file__)  # Diretório atual do script
+    caminho_imagem = os.path.join(current_dir, 'IMAGENS')
+    image_path = os.path.join(caminho_imagem, image_path)
+    
+    for attempt in range(max_attempts):
+        try:
+            position = pyautogui.locateOnScreen(image_path, confidence=confidence)
+            if position:
+                print("Nota encontrada na tela.")
+                return True
+        except Exception as e:
+            print("Nota não encontrada na tela. Aguardando...")
+        pyautogui.sleep(1)
+    
+    return False
+ 
 def verificar_campo(image_name, confidence=0.9):
     # Construir o caminho completo para a imagem
     current_dir = os.path.dirname(__file__)  # Diretório atual do script
@@ -80,6 +98,56 @@ def click_nota(image_path, confidence=0.9):
                 break
         except Exception as e:
             print("Imagem não encontrada na tela. Aguardando...")
+        pyautogui.sleep(1)
+
+def image_erro(image_name,image_name2,image_name3,image_name4,confidence=0.9):
+    # Construir o caminho completo para a imagem
+    current_dir = os.path.dirname(__file__)  # Diretório atual do script
+    caminho_imagem = os.path.join(current_dir, 'IMAGENS')
+    image_path = os.path.join(caminho_imagem, image_name)
+    image_path2 = os.path.join(caminho_imagem, image_name2)
+    image_path3 = os.path.join(caminho_imagem, image_name3)
+    image_path4 = os.path.join(caminho_imagem, image_name4)
+    while True:
+        try:
+            position = pyautogui.locateOnScreen(image_path, confidence=confidence)         
+            if position:
+                click_image('ok_aviso.png')
+                try:
+                    position3 = pyautogui.locateOnScreen(image_path3, confidence=confidence)
+                    if position:
+                        center_x = position3.left + position3.width // 2
+                        center_y = position3.top + position3.height // 2
+                        pyautogui.moveTo(center_x, center_y)  # Movendo o cursor para a posição da imagem               
+                        pyautogui.moveRel(-80, 0)  # Movendo o cursor para cima
+                        pyautogui.click()  # Clicando no local da imagem
+                        for i in range(2): 
+                            pyautogui.press("tab")
+                        click_image('efetuar_baixa.png')
+                        print("Imagem de erro encontrada na tela.")
+                        break
+                except Exception as e:
+                    print("Imagem não encontrada na tela. Aguardando...")
+            position2 = pyautogui.locateOnScreen(image_path2, confidence=confidence)
+            if position2:
+                 break
+        except Exception as e:
+            print("Imagem de erro não encontrada na tela.")
+        try:
+            position2 = pyautogui.locateOnScreen(image_path2, confidence=confidence)
+            if position2:
+                print("Imagem de Baixa efetuada")
+                break
+        except Exception as e:
+            print("Imagem de Baixa não encontrada na tela.")
+        try:
+            position4 = pyautogui.locateOnScreen(image_path4, confidence=confidence)
+            if position4:
+                print("Imagem de Baixa efetuada")
+                break
+        except Exception as e:
+            print("Imagem de Baixa não encontrada na tela.")
+        
         pyautogui.sleep(1)
 
 def check_caps_lock():
@@ -183,47 +251,50 @@ for linha in combined_df.index:
         pyautogui.sleep(1)
         click_image('atualizar.png')
         pyautogui.sleep(1)
-        click_image('salvar_filial.png')
-        pyautogui.write("1")
-        pyautogui.sleep(1)       
-        click_image('salvar_ocorrencia.png')
-        pyautogui.write("1")
-        pyautogui.sleep(1)      
-        click_image('salvar_observ.png')
-        pyautogui.write("1")
-        pyautogui.sleep(1)           
-        pyautogui.press("tab")
-        verificar_campo('campo_filial.png')
-        verificar_campo('campo_observacao.png')
-        verificar_campo('campo_ocorrencia.png')
-        click_image('salvar_datachegada.png')
-        for i in range(10):
-            pyautogui.press("backspace")
-        pyautogui.write(str(data_chegada))
-        pyautogui.write("22:00")  ## 22 HORAS É UMA MARCAÇÃO ARBITRARIA DO NOSSO TIME
-        pyautogui.sleep(1)
-        pyautogui.press('tab')
-        pyautogui.write(str(data_entrega))
-        pyautogui.write("22:01")
-        pyautogui.sleep(1)
-        pyautogui.press('tab')
-        pyautogui.write(str(data_fim_descarregamento))
-        pyautogui.write("22:02")
-        pyautogui.sleep(1)
-        pyautogui.press('tab')
-        pyautogui.write("aaa")
-        pyautogui.sleep(1)
-        for i in range(2):
+        if imagem_encontrada('nota_encontrada.png'):        
+            click_image('salvar_filial.png')
+            pyautogui.write("1")
+            pyautogui.sleep(1)       
+            click_image('salvar_ocorrencia.png')
+            pyautogui.write("1")
+            pyautogui.sleep(1)      
+            click_image('salvar_observ.png')
+            pyautogui.write("1")
+            pyautogui.sleep(1)           
             pyautogui.press("tab")
-        pyautogui.write("111")
-        pyautogui.sleep(1)
-        click_image('efetuar_baixa.png')
-        click_image('yes.png')
-        pyautogui.sleep(2)
-        click_image('yes.png')
-        pyautogui.sleep(2)
-        click_image('OK.png')
-        pyautogui.sleep(2)
+            verificar_campo('campo_filial.png')
+            verificar_campo('campo_observacao.png')
+            verificar_campo('campo_ocorrencia.png')
+            click_image('salvar_datachegada.png')
+            for i in range(10):
+                pyautogui.press("backspace")
+            pyautogui.write(str(data_chegada))
+            pyautogui.write("22:00")  ## 22 HORAS É UMA MARCAÇÃO ARBITRARIA DO NOSSO TIME
+            pyautogui.sleep(1)
+            pyautogui.press('tab')
+            pyautogui.write(str(data_entrega))
+            pyautogui.write("22:01")
+            pyautogui.sleep(1)
+            pyautogui.press('tab')
+            pyautogui.write(str(data_fim_descarregamento))
+            pyautogui.write("22:02")
+            pyautogui.sleep(1)
+            pyautogui.press('tab')
+            pyautogui.write("aaa")
+            pyautogui.sleep(1)
+            for i in range(2):
+                pyautogui.press("tab")
+            pyautogui.write("111")
+            pyautogui.sleep(1)
+            click_image('efetuar_baixa.png')
+            image_erro('mensagem_erro.png','mensagem_deu_certo.png','campo_filial.png','imagem_baixar_entrega.png')
+            click_image('yes.png')
+            pyautogui.sleep(2)
+            click_image('yes.png')
+            pyautogui.sleep(2)
+            click_image('OK.png')
+            pyautogui.sleep(2)
+
 
 #print(combined_df)  
 combined_df.to_excel('BASE_DADOS.xlsx', index=False)    
