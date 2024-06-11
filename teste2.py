@@ -150,6 +150,25 @@ def image_erro(image_name,image_name2,image_name3,image_name4,confidence=0.9):
         
         pyautogui.sleep(1)
 
+def erro_efetuar(image_path, confidence=0.9, max_attempts=5):
+    # Construir o caminho completo para a imagem
+    current_dir = os.path.dirname(__file__)  # Diretório atual do script
+    caminho_imagem = os.path.join(current_dir, r'IMAGENS', image_path)
+    attempts = 0
+    while attempts < max_attempts:
+        try:
+            position = pyautogui.locateOnScreen(caminho_imagem, confidence=confidence)
+            if position:
+                click_image('OK.png')
+                pyautogui.sleep(2)
+                click_image('OK.png')
+                click_image('efetuar_baixa.png')
+                break
+        except Exception as e:
+            print(f"Imagem não encontrada na tela. Tentativa {attempts + 1} de {max_attempts}. Aguardando...")
+        attempts += 1
+        pyautogui.sleep(1)
+
 def check_caps_lock():
     return ctypes.windll.user32.GetKeyState(0x14) & 0xffff != 0
 
@@ -163,9 +182,11 @@ Planilha_1 = pd.read_excel("EntregaT2.xlsx", skiprows=4)
 Planilha_1 = Planilha_1.rename(columns={'Nota Fiscal': 'NF','Data Prevista': 'DATA NOTA FISCAL'})
 colunas_para_remover = ['Cobrou Descarga?', 'Motivo Atraso', 'Serie', 'Motivo Devolução', 'Cliente', 'Emp Carga', 'Bren', 'SP', 'Número Carga']
 Planilha_1.drop(columns=colunas_para_remover, inplace=True)
-# print(Planilha_1)
+Planilha_1 = Planilha_1.dropna(axis=1, how='all')
+#print(Planilha_1)
 
 Planilha_2 = pd.read_excel("BASE_DADOS.xlsx")
+Planilha_2 = Planilha_2.dropna(axis=1, how='all')
 #print(Planilha_2)
 
 Planilha_sumare = pd.read_excel("planilha_sumare.xlsx")
@@ -174,38 +195,39 @@ Planilha_sumare.drop(columns=colunas_para_remover, inplace=True)
 Planilha_sumare = Planilha_sumare.rename(columns={'N° NF': 'NF', 'Data NF': 'DATA NOTA FISCAL', 'DATA  ENTREGA': 'Data Chegada', 'Status da entrega': 'STATUS'})
 Planilha_sumare['Data Entrega'] = Planilha_sumare['Data Chegada']
 Planilha_sumare['Fim Descarreg.'] = Planilha_sumare['Data Chegada']
+Planilha_sumare = Planilha_sumare.dropna(axis=1, how='all')
 #print(Planilha_sumare)
 
-# Juntar os dados das duas planilhas
+# # Juntar os dados das duas planilhas
 combined_df = pd.concat([Planilha_2, Planilha_1,Planilha_sumare], ignore_index=True)
 combined_df = combined_df[combined_df['STATUS'] == 'Entregue']
 combined_df = combined_df.drop_duplicates(subset='NF', keep='first')
-combined_df['BAIXADO'].fillna('NAO', inplace=True)
+combined_df['BAIXADO'] = combined_df['BAIXADO'].fillna('NAO')
 #print(combined_df)
 
-# # #LOGIN
-# if check_caps_lock():
-#     pyautogui.press("capslock")  # Desativa o CAPS LOCK se estiver ativado
-# pyautogui.keyDown('win')
-# pyautogui.press("m")
-# pyautogui.keyUp('win')
-# click_image('logo_rodopar_areatrabalho.png')#PC ESCRITORIO
-# #click_image('logo_rodopar_areatrabalho_casa.png')#PC CASA
-# pyautogui.click()
-# click_image('conectar_rodopar.png')
-# click_image('senha_rodopar_1.png')
-# pyautogui.write("17@mudar")
-# click_image('ok_primeiro_login.png')
-# click_image('sim_primeiro_login.png')
-# click_image('segundo_login.png')
-# pyautogui.sleep(1)
-# pyautogui.write("anascimento")
-# pyautogui.press("tab")
-# pyautogui.write("99060767")
-# for i in range(2): 
-#     pyautogui.press("enter")
-# click_image('escolha_filial.png')
-# pyautogui.press("enter")
+# # # #LOGIN
+# # if check_caps_lock():
+# #     pyautogui.press("capslock")  # Desativa o CAPS LOCK se estiver ativado
+# # pyautogui.keyDown('win')
+# # pyautogui.press("m")
+# # pyautogui.keyUp('win')
+# # click_image('logo_rodopar_areatrabalho.png')#PC ESCRITORIO
+# # #click_image('logo_rodopar_areatrabalho_casa.png')#PC CASA
+# # pyautogui.click()
+# # click_image('conectar_rodopar.png')
+# # click_image('senha_rodopar_1.png')
+# # pyautogui.write("17@mudar")
+# # click_image('ok_primeiro_login.png')
+# # click_image('sim_primeiro_login.png')
+# # click_image('segundo_login.png')
+# # pyautogui.sleep(1)
+# # pyautogui.write("anascimento")
+# # pyautogui.press("tab")
+# # pyautogui.write("99060767")
+# # for i in range(2): 
+# #     pyautogui.press("enter")
+# # click_image('escolha_filial.png')
+# # pyautogui.press("enter")
 
 click_image('botao_frota.png')
 pyautogui.press("alt")
@@ -288,6 +310,7 @@ for linha in combined_df.index:
             pyautogui.sleep(1)
             click_image('efetuar_baixa.png')
             image_erro('mensagem_erro.png','mensagem_deu_certo.png','campo_filial.png','imagem_baixar_entrega.png')
+            erro_efetuar('Erro_sistema_caiu.png')
             click_image('yes.png')
             pyautogui.sleep(2)
             click_image('yes.png')
