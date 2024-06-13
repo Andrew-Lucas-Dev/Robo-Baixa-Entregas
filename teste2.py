@@ -239,15 +239,17 @@ pyautogui.press("right")
 for i in range(10): 
     pyautogui.press("down")
 pyautogui.press("enter")
+numero_linhas = len(combined_df)
+#print(numero_linhas)
 
-for linha in combined_df.index:
+for i, linha in enumerate(combined_df.index):
     nf = combined_df.loc[linha, "NF"]
     data_nota_fiscal = combined_df.loc[linha, "DATA NOTA FISCAL"]
     data_chegada = combined_df.loc[linha, "Data Chegada"]   
     data_entrega = combined_df.loc[linha, "Data Entrega"]   
     data_fim_descarregamento =  combined_df.loc[linha, "Fim Descarreg."]  
     baixado = str(combined_df.loc[linha, "BAIXADO"])  
-
+    #print(linha)
     if baixado == "SIM":
         continue
     else:    
@@ -259,8 +261,9 @@ for linha in combined_df.index:
         data_um_mes_antes = data_um_mes_antes.strftime('%d/%m/%Y')    
         status = 'ENTREGUE'
         combined_df.loc[linha, "BAIXADO"] = "SIM"
-        print(f'nota:{nf} data da nota:{data_um_mes_antes} data chegada:{data_chegada} data entrega:{data_entrega} data fim descarregamento:{data_fim_descarregamento}')
-    
+        falta = numero_linhas - i 
+        print(f'nota:{nf} data da nota:{data_um_mes_antes} data chegada:{data_chegada} data entrega:{data_entrega} data fim descarregamento:{data_fim_descarregamento} falta:{falta}')
+        
         click_image('cancelar.png')
         click_image('digitar_data.png')
         for i in range(10):
