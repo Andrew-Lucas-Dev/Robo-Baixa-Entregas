@@ -370,15 +370,12 @@ for i, linha in enumerate(combined_df.index):
             for i in range(10):
                 pyautogui.press("backspace")
             pyautogui.write(str(data_chegada))
-            #pyautogui.write("22:00")  ## 22 HORAS É UMA MARCAÇÃO ARBITRARIA DO NOSSO TIME
             pyautogui.sleep(1)
             pyautogui.press('tab')
             pyautogui.write(str(data_entrega))
-            #pyautogui.write("22:01")
             pyautogui.sleep(1)
             pyautogui.press('tab')
             pyautogui.write(str(data_fim_descarregamento))
-            #pyautogui.write("22:02")
             pyautogui.sleep(1)
             pyautogui.press('tab')
             pyautogui.write("aaa")
