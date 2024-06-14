@@ -208,20 +208,20 @@ def processar_coluna_data(df, coluna):
     df[coluna] = df[coluna].astype(str).str.strip()  # Converter para string e remover espaços em branco
     df[coluna] = pd.to_datetime(df[coluna], format='%Y-%m-%d', errors='coerce')  # Converter para datetime
     df[coluna] = df[coluna] + pd.Timedelta(hours=22)  # Adicionar o horário '22:00'
-    df[coluna] = df[coluna].dt.strftime('%d/%m/%Y%H:%M')  # Formatar no formato desejado
+    df[coluna] = df[coluna].dt.strftime('%d/%m/%Y %H:%M')  # Formatar no formato desejado
 
 def processar_datas(df, colunas):
     for coluna in colunas:
-        if 'Data' in coluna:
+        if 'Data Entrega' in coluna:
             df[coluna] = pd.to_datetime(df[coluna], dayfirst=True, errors='coerce') + pd.Timedelta(minutes=1)
-        elif 'Fim' in coluna:
+        elif 'Fim Descarreg.' in coluna:
             df[coluna] = pd.to_datetime(df[coluna], dayfirst=True, errors='coerce') + pd.Timedelta(minutes=2)
         df[coluna] = df[coluna].dt.strftime('%d/%m/%Y%H:%M')
 
 def formatar_datas(df, colunas):
     for coluna in colunas:
         df[coluna] = pd.to_datetime(df[coluna], errors='coerce')
-        df[coluna] = df[coluna].dt.strftime('%d/%m/%Y %H:%M')
+        df[coluna] = df[coluna].dt.strftime('%d/%m/%Y%H:%M')
 
 Planilha_CC19 = pd.read_excel("planilhaderotascc19.xlsx")
 colunas_para_remover = ['Série', 'Cnpj cliente', 'N° Carga', 'Status da baixa','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico']
@@ -240,7 +240,9 @@ for coluna in colunas_de_data:
     processar_coluna_data(Planilha_CC19, coluna)
 colunas_de_data_horas = ['Data Entrega', 'Fim Descarreg.']
 processar_datas(Planilha_CC19, colunas_de_data_horas)
-#print(Planilha_CC19)
+Planilha_CC19['Data Chegada'] = pd.to_datetime(Planilha_CC19['Data Chegada'], errors='coerce')
+Planilha_CC19['Data Chegada'] = Planilha_CC19['Data Chegada'].dt.strftime('%d/%m/%Y%H:%M')
+#print(Planilha_CC19['Data Chegada'])
 
 Planilha_CC15 = pd.read_excel("planilhaderotascc15.xlsx")
 colunas_para_remover = ['Série', 'Cnpj cliente', 'N° Carga', 'Status da baixa','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico']
@@ -258,9 +260,9 @@ Planilha_CC15['DATA NOTA FISCAL'] = Planilha_CC15['DATA NOTA FISCAL'].dt.strftim
 colunas_de_data = ['Data Chegada', 'Data Entrega', 'Fim Descarreg.']
 for coluna in colunas_de_data:
     processar_coluna_data(Planilha_CC15, coluna)
-Planilha_CC15['Data Entrega'] = pd.to_datetime(Planilha_CC15['Data Entrega'], format='%d/%m/%Y%H:%M')
-Planilha_CC15['Fim Descarreg.'] = pd.to_datetime(Planilha_CC15['Fim Descarreg.'], format='%d/%m/%Y%H:%M')
 processar_datas(Planilha_CC15, colunas_de_data_horas)
+Planilha_CC15['Data Chegada'] = pd.to_datetime(Planilha_CC15['Data Chegada'], errors='coerce')
+Planilha_CC15['Data Chegada'] = Planilha_CC15['Data Chegada'].dt.strftime('%d/%m/%Y%H:%M')
 #print(Planilha_CC15)
 
 Planilha_Bahia = pd.read_excel("EntregaT2.xlsx")
@@ -274,7 +276,7 @@ Planilha_Bahia['DATA NOTA FISCAL'] = pd.to_datetime(Planilha_Bahia['DATA NOTA FI
 Planilha_Bahia['DATA NOTA FISCAL'] = Planilha_Bahia['DATA NOTA FISCAL'].dt.strftime('%d/%m/%Y')
 colunas_para_formatar = ['Data Chegada', 'Data Entrega', 'Fim Descarreg.']
 formatar_datas(Planilha_Bahia, colunas_para_formatar)
-#print(Planilha_Bahia)
+# #print(Planilha_Bahia)
 
 BASE_DADOS = pd.read_excel("BASE_DADOS.xlsx")
 BASE_DADOS = BASE_DADOS.dropna(axis=1, how='all')
@@ -285,7 +287,7 @@ combined_df = pd.concat([BASE_DADOS,Planilha_CC19, Planilha_CC15,Planilha_Bahia]
 combined_df = combined_df[combined_df['STATUS'] == 'Entregue']
 combined_df = combined_df.drop_duplicates(subset='NF', keep='first')
 combined_df['BAIXADO'] = combined_df['BAIXADO'].fillna('NAO')
-#print(combined_df)
+print(combined_df)
 
 # # # #LOGIN
 # # if check_caps_lock():
@@ -322,7 +324,7 @@ for i in range(10):
     pyautogui.press("down")
 pyautogui.press("enter")
 numero_linhas = len(combined_df)
-#print(numero_linhas)
+# #print(numero_linhas)
 
 for i, linha in enumerate(combined_df.index):
     nf = combined_df.loc[linha, "NF"]
@@ -337,7 +339,7 @@ for i, linha in enumerate(combined_df.index):
     else:    
         status = 'ENTREGUE'
         falta = numero_linhas - i 
-        print(f'nota:{nf} data da nota:{data_nota_fiscal} data chegada:{data_chegada} data entrega:{data_entrega} data fim descarregamento:{data_fim_descarregamento} falta:{falta}')
+        print(f'nota:{nf} data nota:{data_nota_fiscal} data chegada:{data_chegada} data entrega:{data_entrega} fim descarregamento:{data_fim_descarregamento} falta:{falta}')
         
         click_image('cancelar.png')
         click_image('digitar_data.png')
