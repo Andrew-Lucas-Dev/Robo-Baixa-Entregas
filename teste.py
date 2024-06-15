@@ -1,61 +1,122 @@
 import pandas as pd
-from openpyxl import load_workbook
-import os
+from datetime import datetime
+import numpy as np
 
-# Carregar os dados dos arquivos Excel
-Planilha_1 = pd.read_excel("Pasta1.xlsx")
-Planilha_1.fillna(0, inplace=True)  # Preencher células vazias com 0
-#print(Planilha_1)
 
-Planilha_2 = pd.read_excel("Pasta2.xlsx")
-Planilha_2.fillna(0, inplace=True)  # Preencher células vazias com 0
-#print(Planilha_2)
+def processar_coluna_data(df, coluna):
+    df[coluna] = df[coluna].astype(str).str.strip()  # Converter para string e remover espaços em branco
+    df[coluna] = pd.to_datetime(df[coluna], format='%Y-%m-%d', errors='coerce')  # Converter para datetime
+    df[coluna] = df[coluna] + pd.Timedelta(hours=22)  # Adicionar o horário '22:00'
+    df[coluna] = df[coluna].dt.strftime('%d/%m/%Y %H:%M')  # Formatar no formato desejado
 
-# Juntar os dados das duas planilhas
-combined_df = pd.concat([Planilha_1, Planilha_2], ignore_index=True)
-combined_df.fillna(0, inplace=True)  # Preencher células vazias com 0
+def processar_coluna_chegada(df, coluna):
+    df[coluna] = df[coluna] + pd.Timedelta(hours=22)
+    df[coluna] = df[coluna].dt.strftime('%d/%m/%Y%H:%M')
 
-# Identificar linhas duplicadas na coluna 'NF'
-duplicates = combined_df[combined_df.duplicated(subset='NF', keep=False)]
+def processar_datas(df, colunas):
+    
+    for coluna in colunas:
+        if 'Data Entrega' in coluna:
+            df[coluna] = pd.to_datetime(df[coluna], dayfirst=True, errors='coerce') + pd.Timedelta(minutes=1)
+        elif 'Fim Descarreg.' in coluna:
+            df[coluna] = pd.to_datetime(df[coluna], dayfirst=True, errors='coerce') + pd.Timedelta(minutes=2)
+        df[coluna] = df[coluna].dt.strftime('%d/%m/%Y%H:%M')
+        
+def formatar_datas(df, colunas):
+    for coluna in colunas:
+        df[coluna] = pd.to_datetime(df[coluna], errors='coerce')
+        df[coluna] = df[coluna].dt.strftime('%d/%m/%Y%H:%M')
 
-# Marcar as duplicatas que atendem aos critérios desejados ('STATUS' igual a 'ENTREGUE' ou 'BAIXADO' igual a 'SIM')
-duplicates_to_keep = duplicates[(duplicates['STATUS'] == 'ENTREGUE') & (duplicates['BAIXADO'] == 'SIM')]
 
-# Marcar todas as duplicatas
-combined_df['is_duplicate'] = combined_df.duplicated(subset='NF', keep=False)
+Planilha_CC19 = pd.read_excel("planilhaderotascc19.xlsx")
+colunas_para_remover = ['Série', 'Cnpj cliente', 'N° Carga', 'Status da baixa','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico']
+Planilha_CC19.drop(columns=colunas_para_remover, inplace=True)
+Planilha_CC19['N° NF'] = pd.to_numeric(Planilha_CC19['N° NF'], errors='coerce')
+Planilha_CC19.dropna(subset=['N° NF'], inplace=True)
+Planilha_CC19['N° NF'] = Planilha_CC19['N° NF'].astype(int)
+Planilha_CC19 = Planilha_CC19.rename(columns={'N° NF': 'NF', 'Data NF': 'DATA NOTA FISCAL', 'Data': 'Data Chegada', 'Status da entrega': 'STATUS'})
+Planilha_CC19['Data Entrega'] = Planilha_CC19['Data Chegada']
+Planilha_CC19['Fim Descarreg.'] = Planilha_CC19['Data Chegada']
+Planilha_CC19['DATA NOTA FISCAL'] = pd.to_datetime(Planilha_CC19['DATA NOTA FISCAL'])
+Planilha_CC19['DATA NOTA FISCAL'] = Planilha_CC19['DATA NOTA FISCAL'].dt.strftime('%d/%m/%Y')
+colunas_de_data = ['Data Entrega', 'Fim Descarreg.']
+for coluna in colunas_de_data:
+    processar_coluna_data(Planilha_CC19, coluna)
+processar_datas(Planilha_CC19, colunas_de_data)
+processar_coluna_chegada(Planilha_CC19,'Data Chegada')
+Planilha_CC19 = Planilha_CC19.dropna(axis=1, how='all')
+#print(Planilha_CC19['Data Chegada'])
 
-# Manter apenas as linhas que não são duplicatas ou que atendem aos critérios
-filtered_df = combined_df[~((combined_df['is_duplicate'] == True) & ~(combined_df.index.isin(duplicates_to_keep.index)))]
 
-# Remover a coluna de marcação
-filtered_df.drop(columns=['is_duplicate'], inplace=True)
+Planilha_CC15 = pd.read_excel("planilhaderotascc15.xlsx")
+colunas_para_remover = ['Série', 'Cnpj cliente', 'N° Carga', 'Status da baixa','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico']
+Planilha_CC15.drop(columns=colunas_para_remover, inplace=True)
+Planilha_CC15['N° NF'] = pd.to_numeric(Planilha_CC15['N° NF'], errors='coerce')
+Planilha_CC15.dropna(subset=['N° NF'], inplace=True)
+Planilha_CC15['N° NF'] = Planilha_CC15['N° NF'].astype(int)
+Planilha_CC15 = Planilha_CC15.rename(columns={'N° NF': 'NF', 'Data NF': 'DATA NOTA FISCAL', 'Data': 'Data Chegada', 'Status da entrega': 'STATUS'})
+Planilha_CC15['Data Entrega'] = Planilha_CC15['Data Chegada']
+Planilha_CC15['Fim Descarreg.'] = Planilha_CC15['Data Chegada']
+Planilha_CC15['STATUS'] = Planilha_CC15['STATUS'].fillna('EM ROTA')
+Planilha_CC15['DATA NOTA FISCAL'] = pd.to_datetime(Planilha_CC15['DATA NOTA FISCAL'])
+Planilha_CC15['DATA NOTA FISCAL'] = Planilha_CC15['DATA NOTA FISCAL'].dt.strftime('%d/%m/%Y')
+colunas_de_data = ['Data Entrega', 'Fim Descarreg.']
+for coluna in colunas_de_data:
+    processar_coluna_data(Planilha_CC15, coluna) 
+processar_datas(Planilha_CC15, colunas_de_data)
+processar_coluna_chegada(Planilha_CC15,'Data Chegada')
+Planilha_CC15 = Planilha_CC15.dropna(axis=1, how='all')
+#print(Planilha_CC15['DATA NOTA FISCAL'])
 
-filtered_df = filtered_df.drop_duplicates(subset='NF', keep='first')
 
-# Mostrar o DataFrame resultante
-#print(filtered_df)
+Planilha_Bahia = pd.read_excel("EntregaT2.xlsx")    
+Planilha_Bahia = Planilha_Bahia[['NF', 'STATUS', 'DT NF', 'CHEGADA', 'FIM DESCARGA', 'ENTREGA']]
+Planilha_Bahia = Planilha_Bahia[(Planilha_Bahia['STATUS'] == 'ATRASADA') | (Planilha_Bahia['STATUS'] == 'NO PRAZO')]
+Planilha_Bahia = Planilha_Bahia.rename(columns={'DT NF': 'DATA NOTA FISCAL','CHEGADA': 'Data Chegada', 'ENTREGA': 'Data Entrega', 'FIM DESCARGA': 'Fim Descarreg.'})
+Planilha_Bahia['NF'] = Planilha_Bahia['NF'].astype(np.int64)#problema do .0
+Planilha_Bahia['STATUS'] = 'Entregue'
+Planilha_Bahia['DATA NOTA FISCAL'] = pd.to_datetime(Planilha_Bahia['DATA NOTA FISCAL'])
+Planilha_Bahia['DATA NOTA FISCAL'] = Planilha_Bahia['DATA NOTA FISCAL'].dt.strftime('%d/%m/%Y')
+colunas_para_formatar = ['Data Chegada', 'Data Entrega', 'Fim Descarreg.']
+formatar_datas(Planilha_Bahia, colunas_para_formatar)
+Planilha_Bahia = Planilha_Bahia.dropna(axis=1, how='all')
+# #print(Planilha_Bahia)
 
-#Impressão dos dados sem duplicatas
-for linha in filtered_df.index:
-    nf = filtered_df.loc[linha, "NF"]
-    data = filtered_df.loc[linha, "DATA"]
-    status = filtered_df.loc[linha, "STATUS"]
-    baixado = filtered_df.loc[linha, "BAIXADO"]
+BASE_DADOS = pd.read_excel("BASE_DADOS.xlsx")
+BASE_DADOS = BASE_DADOS.dropna(axis=1, how='all')
+#print(BASE_DADOS)
 
-    if baixado == 0 and status == 'ENTREGUE':
-        print('ENTREGUE')
-        filtered_df.loc[linha, "BAIXADO"] = 'SIM'  
-    elif baixado == 0 and status == 'NÃO ENTREGUE':
-        print('NÃO ENTREGUE')
+# # # # Juntar as 4 planilhas
+combined_df = pd.concat([BASE_DADOS,Planilha_CC19, Planilha_CC15,Planilha_Bahia], ignore_index=True)
+combined_df = combined_df[combined_df['STATUS'] == 'Entregue']
+combined_df = combined_df.drop_duplicates(subset='NF', keep='first')
+combined_df['BAIXADO'] = combined_df['BAIXADO'].fillna('NAO')
+#print(combined_df)
 
-filtered_df = filtered_df[(combined_df['STATUS'] == 'ENTREGUE') & (filtered_df['BAIXADO'] == 'SIM')]
-filtered_df = filtered_df.sort_values(by=['DATA', 'NF'], ascending=[True, False])
 
-# Nome do arquivo e da planilha
-file_path = "Pasta2.xlsx"
-sheet_name = "Sheet1"
+def remover_hora(data_str):
+    if pd.notna(data_str) and isinstance(data_str, str):
+        # Retorna a string sem os últimos 5 caracteres
+        return data_str[:-5]
+    return None
 
-# Salva o DataFrame no arquivo Excel, substituindo o arquivo existente, se houver
-with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
-    filtered_df.to_excel(writer, sheet_name=sheet_name, index=False)
-    print(f"O DataFrame foi salvo na planilha '{sheet_name}' do arquivo {file_path}.")
+for i, linha in enumerate(combined_df.index):
+    nf = combined_df.loc[linha, "NF"]
+    data_nota_fiscal = combined_df.loc[linha, "DATA NOTA FISCAL"]
+    data_chegada = combined_df.loc[linha, "Data Chegada"]   
+    data_entrega = combined_df.loc[linha, "Data Entrega"]   
+    data_fim_descarregamento =  combined_df.loc[linha, "Fim Descarreg."]  
+    baixado = str(combined_df.loc[linha, "BAIXADO"])
+    if baixado == "SIM":
+        continue
+    else:    
+        data_chegada_str_sem_hora = remover_hora(data_chegada)
+        data_datetime = datetime.strptime(data_nota_fiscal, '%d/%m/%Y')
+        data_datetime2 = datetime.strptime(data_chegada_str_sem_hora, '%d/%m/%Y')
+        if data_datetime and data_datetime2:
+            if data_datetime > data_datetime2:
+                data_datetime = datetime.strptime(data_nota_fiscal, '%m/%d/%Y')
+                data_str_formatada = data_datetime.strftime('%d/%m/%Y')
+                data_nota_fiscal = data_str_formatada
+                print(f'data_nota_fiscal:{data_nota_fiscal} data_chegada:{data_chegada}')
+

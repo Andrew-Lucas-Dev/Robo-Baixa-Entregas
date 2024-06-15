@@ -4,10 +4,16 @@ import os
 import numpy as np
 import pyautogui
 import ctypes
+from datetime import datetime
 
 caminho = os.getcwd() 
 caminho_sistema = caminho.replace("C", "T", 1)
 
+def remover_hora(data_str):
+    if pd.notna(data_str) and isinstance(data_str, str):
+        # Retorna a string sem os últimos 5 caracteres
+        return data_str[:-5]
+    return None
 
 def click_image(image_path, confidence=0.9):
     # Construir o caminho completo para a imagem
@@ -27,12 +33,48 @@ def click_image(image_path, confidence=0.9):
             print("Imagem não encontrada na tela. Aguardando...")
         pyautogui.sleep(1)
 
+def baixada_ou_nao(yes, ok, confidence=0.9):
+    # Construir o caminho completo para a imagem
+    current_dir = os.path.dirname(__file__)  # Diretório atual do script
+    caminho_imagem = caminho + r'\IMAGENS'
+    yes_path = os.path.join(current_dir, caminho_imagem, yes) 
+    ok_path = os.path.join(current_dir, caminho_imagem, ok) 
+    
+    while True:
+        print("dentro da funçao")
+        try:
+            # Tentar localizar a imagem 'yes'
+            position = pyautogui.locateOnScreen(yes_path, confidence=confidence)
+            if position:
+                center_x = position.left + position.width // 2
+                center_y = position.top + position.height // 2
+                pyautogui.click(center_x, center_y)
+                print("Nota sera baixada.")
+                break
+        except Exception as e:
+            print("Imagem 'yes' não encontrada na tela. Aguardando...")
+        
+        try:
+            # Tentar localizar a imagem 'ok'
+            position = pyautogui.locateOnScreen(ok_path, confidence=confidence)
+            if position:
+                center_x = position.left + position.width // 2
+                center_y = position.top + position.height // 2
+                pyautogui.click(center_x, center_y)
+                print("Nota ja baixada.")
+                return True
+        except Exception as e:
+            print("Imagem 'ok' não encontrada na tela. Aguardando...")
+        
+        pyautogui.sleep(1)
+    
+    return False
+
 def imagem_encontrada(image_path, confidence=0.9, max_attempts=5):
     # Construir o caminho completo para a imagem
     current_dir = os.path.dirname(__file__)  # Diretório atual do script
     caminho_imagem = os.path.join(current_dir, 'IMAGENS')
     image_path = os.path.join(caminho_imagem, image_path)
-    
     for attempt in range(max_attempts):
         try:
             position = pyautogui.locateOnScreen(image_path, confidence=confidence)
@@ -42,9 +84,21 @@ def imagem_encontrada(image_path, confidence=0.9, max_attempts=5):
         except Exception as e:
             print("Nota não encontrada na tela. Aguardando...")
         pyautogui.sleep(1)
-    
-    # Ação após atingir o número máximo de tentativas
-    print("Número máximo de tentativas atingido. Nota não encontrada.")
+
+    click_image('CTRC.png')
+    for i in range(2):
+        pyautogui.press("down")
+    pyautogui.sleep(0.5)
+    pyautogui.press("enter")   
+    for attempt in range(max_attempts):
+        try:
+            position = pyautogui.locateOnScreen(image_path, confidence=confidence)
+            if position:
+                print("Nota encontrada na tela é uma OST.")
+                return True
+        except Exception as e:
+            print("Nota não encontrada na tela. Aguardando...")
+        pyautogui.sleep(1)  
     
     click_image('cancelar.png')
     click_image('digitar_data.png')
@@ -60,7 +114,6 @@ def imagem_encontrada(image_path, confidence=0.9, max_attempts=5):
     pyautogui.sleep(1)
     click_image('atualizar.png')
     pyautogui.sleep(1)
-    # Adicione aqui qualquer outra ação que você queira executar
     for attempt in range(max_attempts):
         try:
             position = pyautogui.locateOnScreen(image_path, confidence=confidence)
@@ -70,6 +123,7 @@ def imagem_encontrada(image_path, confidence=0.9, max_attempts=5):
         except Exception as e:
             print("Nota não encontrada na tela. Aguardando...")
         pyautogui.sleep(1)
+    print("Número máximo de tentativas atingido. Nota não encontrada.")
     return False
  
 def verificar_campo(image_name, confidence=0.9):
@@ -95,15 +149,18 @@ def verificar_campo(image_name, confidence=0.9):
         else:
             # Se não encontrou após 5 tentativas, realiza as ações adicionais
             click_image('salvar_filial.png')
-            pyautogui.press("backspace")
+            for i in range(5):
+                pyautogui.press("backspace")
             pyautogui.write("1")
             pyautogui.sleep(1)   
             pyautogui.press("tab")
-            pyautogui.press("backspace")
+            for i in range(5):
+                pyautogui.press("backspace")
             pyautogui.write("1")
             pyautogui.sleep(1)   
             pyautogui.press("tab")
-            pyautogui.press("backspace")
+            for i in range(5):
+                pyautogui.press("backspace")            
             pyautogui.write("1")
             pyautogui.sleep(1)   
             pyautogui.press("tab")
@@ -196,6 +253,25 @@ def erro_efetuar(image_path, confidence=0.9, max_attempts=5):
         attempts += 1
         pyautogui.sleep(1)
 
+def atualizar_ocorrencia(image_path, confidence=0.9, max_attempts=5):
+    # Construir o caminho completo para a imagem
+    current_dir = os.path.dirname(__file__)  # Diretório atual do script
+    caminho_imagem = os.path.join(current_dir, r'IMAGENS', image_path)
+    attempts = 0
+    while attempts < max_attempts:
+        try:
+            position = pyautogui.locateOnScreen(caminho_imagem, confidence=confidence)
+            if position:
+                center_x = position.left + position.width // 2
+                center_y = position.top + position.height // 2
+                pyautogui.click(center_x, center_y)
+                print("Baixa de ocorrencia feita com sucesso.")
+                break
+        except Exception as e:
+            print(f"Imagem da baixa nao encontrada. Tentativa {attempts + 1} de {max_attempts}. Aguardando...")
+        attempts += 1
+        pyautogui.sleep(1)
+
 def check_caps_lock():
     return ctypes.windll.user32.GetKeyState(0x14) & 0xffff != 0
 
@@ -210,14 +286,19 @@ def processar_coluna_data(df, coluna):
     df[coluna] = df[coluna] + pd.Timedelta(hours=22)  # Adicionar o horário '22:00'
     df[coluna] = df[coluna].dt.strftime('%d/%m/%Y %H:%M')  # Formatar no formato desejado
 
+def processar_coluna_chegada(df, coluna):
+    df[coluna] = df[coluna] + pd.Timedelta(hours=22)
+    df[coluna] = df[coluna].dt.strftime('%d/%m/%Y%H:%M')
+
 def processar_datas(df, colunas):
+    
     for coluna in colunas:
         if 'Data Entrega' in coluna:
             df[coluna] = pd.to_datetime(df[coluna], dayfirst=True, errors='coerce') + pd.Timedelta(minutes=1)
         elif 'Fim Descarreg.' in coluna:
             df[coluna] = pd.to_datetime(df[coluna], dayfirst=True, errors='coerce') + pd.Timedelta(minutes=2)
         df[coluna] = df[coluna].dt.strftime('%d/%m/%Y%H:%M')
-
+        
 def formatar_datas(df, colunas):
     for coluna in colunas:
         df[coluna] = pd.to_datetime(df[coluna], errors='coerce')
@@ -232,16 +313,14 @@ Planilha_CC19['N° NF'] = Planilha_CC19['N° NF'].astype(int)
 Planilha_CC19 = Planilha_CC19.rename(columns={'N° NF': 'NF', 'Data NF': 'DATA NOTA FISCAL', 'Data': 'Data Chegada', 'Status da entrega': 'STATUS'})
 Planilha_CC19['Data Entrega'] = Planilha_CC19['Data Chegada']
 Planilha_CC19['Fim Descarreg.'] = Planilha_CC19['Data Chegada']
-Planilha_CC19 = Planilha_CC19.dropna(axis=1, how='all')
 Planilha_CC19['DATA NOTA FISCAL'] = pd.to_datetime(Planilha_CC19['DATA NOTA FISCAL'])
 Planilha_CC19['DATA NOTA FISCAL'] = Planilha_CC19['DATA NOTA FISCAL'].dt.strftime('%d/%m/%Y')
-colunas_de_data = ['Data Chegada', 'Data Entrega', 'Fim Descarreg.']
+colunas_de_data = ['Data Entrega', 'Fim Descarreg.']
 for coluna in colunas_de_data:
     processar_coluna_data(Planilha_CC19, coluna)
-colunas_de_data_horas = ['Data Entrega', 'Fim Descarreg.']
-processar_datas(Planilha_CC19, colunas_de_data_horas)
-Planilha_CC19['Data Chegada'] = pd.to_datetime(Planilha_CC19['Data Chegada'], errors='coerce')
-Planilha_CC19['Data Chegada'] = Planilha_CC19['Data Chegada'].dt.strftime('%d/%m/%Y%H:%M')
+processar_datas(Planilha_CC19, colunas_de_data)
+processar_coluna_chegada(Planilha_CC19,'Data Chegada')
+Planilha_CC19 = Planilha_CC19.dropna(axis=1, how='all')
 #print(Planilha_CC19['Data Chegada'])
 
 Planilha_CC15 = pd.read_excel("planilhaderotascc15.xlsx")
@@ -254,28 +333,27 @@ Planilha_CC15 = Planilha_CC15.rename(columns={'N° NF': 'NF', 'Data NF': 'DATA N
 Planilha_CC15['Data Entrega'] = Planilha_CC15['Data Chegada']
 Planilha_CC15['Fim Descarreg.'] = Planilha_CC15['Data Chegada']
 Planilha_CC15['STATUS'] = Planilha_CC15['STATUS'].fillna('EM ROTA')
-Planilha_CC15 = Planilha_CC15.dropna(axis=1, how='all')
 Planilha_CC15['DATA NOTA FISCAL'] = pd.to_datetime(Planilha_CC15['DATA NOTA FISCAL'])
 Planilha_CC15['DATA NOTA FISCAL'] = Planilha_CC15['DATA NOTA FISCAL'].dt.strftime('%d/%m/%Y')
-colunas_de_data = ['Data Chegada', 'Data Entrega', 'Fim Descarreg.']
+colunas_de_data = ['Data Entrega', 'Fim Descarreg.']
 for coluna in colunas_de_data:
-    processar_coluna_data(Planilha_CC15, coluna)
-processar_datas(Planilha_CC15, colunas_de_data_horas)
-Planilha_CC15['Data Chegada'] = pd.to_datetime(Planilha_CC15['Data Chegada'], errors='coerce')
-Planilha_CC15['Data Chegada'] = Planilha_CC15['Data Chegada'].dt.strftime('%d/%m/%Y%H:%M')
-#print(Planilha_CC15)
+    processar_coluna_data(Planilha_CC15, coluna) 
+processar_datas(Planilha_CC15, colunas_de_data)
+processar_coluna_chegada(Planilha_CC15,'Data Chegada')
+Planilha_CC15 = Planilha_CC15.dropna(axis=1, how='all')
+#print(Planilha_CC15['Data Chegada'])
 
-Planilha_Bahia = pd.read_excel("EntregaT2.xlsx")
-Planilha_Bahia = Planilha_Bahia.dropna(axis=1, how='all')
+Planilha_Bahia = pd.read_excel("EntregaT2.xlsx")    
 Planilha_Bahia = Planilha_Bahia[['NF', 'STATUS', 'DT NF', 'CHEGADA', 'FIM DESCARGA', 'ENTREGA']]
 Planilha_Bahia = Planilha_Bahia[(Planilha_Bahia['STATUS'] == 'ATRASADA') | (Planilha_Bahia['STATUS'] == 'NO PRAZO')]
-Planilha_Bahia = Planilha_Bahia.rename(columns={'DT NF': 'DATA NOTA FISCAL','CHEGADA': 'Data Chegada', 'FIM DESCARGA': 'Data Entrega', 'ENTREGA': 'Fim Descarreg.'})
+Planilha_Bahia = Planilha_Bahia.rename(columns={'DT NF': 'DATA NOTA FISCAL','CHEGADA': 'Data Chegada', 'ENTREGA': 'Data Entrega', 'FIM DESCARGA': 'Fim Descarreg.'})
 Planilha_Bahia['NF'] = Planilha_Bahia['NF'].astype(np.int64)#problema do .0
 Planilha_Bahia['STATUS'] = 'Entregue'
 Planilha_Bahia['DATA NOTA FISCAL'] = pd.to_datetime(Planilha_Bahia['DATA NOTA FISCAL'])
 Planilha_Bahia['DATA NOTA FISCAL'] = Planilha_Bahia['DATA NOTA FISCAL'].dt.strftime('%d/%m/%Y')
 colunas_para_formatar = ['Data Chegada', 'Data Entrega', 'Fim Descarreg.']
 formatar_datas(Planilha_Bahia, colunas_para_formatar)
+Planilha_Bahia = Planilha_Bahia.dropna(axis=1, how='all')
 # #print(Planilha_Bahia)
 
 BASE_DADOS = pd.read_excel("BASE_DADOS.xlsx")
@@ -287,7 +365,7 @@ combined_df = pd.concat([BASE_DADOS,Planilha_CC19, Planilha_CC15,Planilha_Bahia]
 combined_df = combined_df[combined_df['STATUS'] == 'Entregue']
 combined_df = combined_df.drop_duplicates(subset='NF', keep='first')
 combined_df['BAIXADO'] = combined_df['BAIXADO'].fillna('NAO')
-print(combined_df)
+#print(combined_df)
 
 # # # #LOGIN
 # # if check_caps_lock():
@@ -336,11 +414,19 @@ for i, linha in enumerate(combined_df.index):
     #print(linha)
     if baixado == "SIM":
         continue
-    else:    
+    else:
+        data_chegada_str_sem_hora = remover_hora(data_chegada)
+        data_datetime = datetime.strptime(data_nota_fiscal, '%d/%m/%Y')
+        data_datetime2 = datetime.strptime(data_chegada_str_sem_hora, '%d/%m/%Y')
+        if data_datetime and data_datetime2:
+            if data_datetime > data_datetime2:
+                data_datetime = datetime.strptime(data_nota_fiscal, '%m/%d/%Y')
+                data_str_formatada = data_datetime.strftime('%d/%m/%Y')  
+                data_nota_fiscal = data_str_formatada  
+
         status = 'ENTREGUE'
-        falta = numero_linhas - i 
+        falta = numero_linhas - i      
         print(f'nota:{nf} data nota:{data_nota_fiscal} data chegada:{data_chegada} data entrega:{data_entrega} fim descarregamento:{data_fim_descarregamento} falta:{falta}')
-        
         click_image('cancelar.png')
         click_image('digitar_data.png')
         for i in range(10):
@@ -391,13 +477,18 @@ for i, linha in enumerate(combined_df.index):
             erro_efetuar('Erro_sistema_caiu.png')
             click_image('yes.png')
             pyautogui.sleep(2)
-            click_image('yes.png')
-            pyautogui.sleep(2)
-            click_image('OK.png')
-            pyautogui.sleep(2)
+            if baixada_ou_nao('yes.png', 'ok.png'):
+                print("Processo concluído com sucesso.")
+            else:
+                #deseja atualizar a ocorrencia
+                atualizar_ocorrencia('yes.png')
+                click_image('OK.png')
+                pyautogui.sleep(2)
         else:
             combined_df.loc[linha, "BAIXADO"] = "NAO" 
 
+
+combined_df = combined_df[combined_df['BAIXADO'] != 'NAO']
 #print(combined_df)  
 combined_df.to_excel('BASE_DADOS.xlsx', index=False)    
 click_image('botao_voltar.png')
