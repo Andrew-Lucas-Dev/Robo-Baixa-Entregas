@@ -11,12 +11,10 @@ caminho_sistema = caminho.replace("C", "T", 1)
 
 def remover_hora(data_str):
     if pd.notna(data_str) and isinstance(data_str, str):
-        # Retorna a string sem os últimos 5 caracteres
         return data_str[:-5]
     return None
 
 def click_image(image_path, confidence=0.9):
-    # Construir o caminho completo para a imagem
     current_dir = os.path.dirname(__file__)  # Diretório atual do script
     caminho_imagem = caminho + r'\IMAGENS'
     image_path = os.path.join(current_dir, caminho_imagem, image_path) 
@@ -34,16 +32,12 @@ def click_image(image_path, confidence=0.9):
         pyautogui.sleep(1)
 
 def baixada_ou_nao(yes, ok, confidence=0.9):
-    # Construir o caminho completo para a imagem
     current_dir = os.path.dirname(__file__)  # Diretório atual do script
     caminho_imagem = caminho + r'\IMAGENS'
     yes_path = os.path.join(current_dir, caminho_imagem, yes) 
     ok_path = os.path.join(current_dir, caminho_imagem, ok) 
-    
     while True:
-        print("dentro da funçao")
         try:
-            # Tentar localizar a imagem 'yes'
             position = pyautogui.locateOnScreen(yes_path, confidence=confidence)
             if position:
                 center_x = position.left + position.width // 2
@@ -55,7 +49,6 @@ def baixada_ou_nao(yes, ok, confidence=0.9):
             print("Imagem 'yes' não encontrada na tela. Aguardando...")
         
         try:
-            # Tentar localizar a imagem 'ok'
             position = pyautogui.locateOnScreen(ok_path, confidence=confidence)
             if position:
                 center_x = position.left + position.width // 2
@@ -65,13 +58,10 @@ def baixada_ou_nao(yes, ok, confidence=0.9):
                 return True
         except Exception as e:
             print("Imagem 'ok' não encontrada na tela. Aguardando...")
-        
         pyautogui.sleep(1)
-    
     return False
 
 def imagem_encontrada(image_path, confidence=0.9, max_attempts=5):
-    # Construir o caminho completo para a imagem
     current_dir = os.path.dirname(__file__)  # Diretório atual do script
     caminho_imagem = os.path.join(current_dir, 'IMAGENS')
     image_path = os.path.join(caminho_imagem, image_path)
@@ -127,7 +117,6 @@ def imagem_encontrada(image_path, confidence=0.9, max_attempts=5):
     return False
  
 def verificar_campo(image_name, confidence=0.9):
-    # Construir o caminho completo para a imagem
     current_dir = os.path.dirname(__file__)  # Diretório atual do script
     caminho_imagem = os.path.join(current_dir, 'IMAGENS')
     image_path = os.path.join(caminho_imagem, image_name)    
@@ -147,7 +136,6 @@ def verificar_campo(image_name, confidence=0.9):
         if found:
             break
         else:
-            # Se não encontrou após 5 tentativas, realiza as ações adicionais
             click_image('salvar_filial.png')
             for i in range(5):
                 pyautogui.press("backspace")
@@ -166,7 +154,6 @@ def verificar_campo(image_name, confidence=0.9):
             pyautogui.press("tab")
 
 def click_nota(image_path, confidence=0.9):
-    # Construir o caminho completo para a imagem
     current_dir = os.path.dirname(__file__)  # Diretório atual do script
     caminho_imagem = caminho + r'\IMAGENS'
     image_path = os.path.join(current_dir, caminho_imagem, image_path) 
@@ -185,7 +172,6 @@ def click_nota(image_path, confidence=0.9):
         pyautogui.sleep(1)
 
 def image_erro(image_name,image_name2,image_name3,image_name4,confidence=0.9):
-    # Construir o caminho completo para a imagem
     current_dir = os.path.dirname(__file__)  # Diretório atual do script
     caminho_imagem = os.path.join(current_dir, 'IMAGENS')
     image_path = os.path.join(caminho_imagem, image_name)
@@ -230,12 +216,10 @@ def image_erro(image_name,image_name2,image_name3,image_name4,confidence=0.9):
                 print("Imagem de Baixa efetuada")
                 break
         except Exception as e:
-            print("Imagem de Baixa não encontrada na tela.")
-        
+            print("Imagem de Baixa não encontrada na tela.")       
         pyautogui.sleep(1)
 
 def erro_efetuar(image_path, confidence=0.9, max_attempts=5):
-    # Construir o caminho completo para a imagem
     current_dir = os.path.dirname(__file__)  # Diretório atual do script
     caminho_imagem = os.path.join(current_dir, r'IMAGENS', image_path)
     attempts = 0
@@ -254,7 +238,6 @@ def erro_efetuar(image_path, confidence=0.9, max_attempts=5):
         pyautogui.sleep(1)
 
 def atualizar_ocorrencia(image_path, confidence=0.9, max_attempts=5):
-    # Construir o caminho completo para a imagem
     current_dir = os.path.dirname(__file__)  # Diretório atual do script
     caminho_imagem = os.path.join(current_dir, r'IMAGENS', image_path)
     attempts = 0
@@ -291,7 +274,6 @@ def processar_coluna_chegada(df, coluna):
     df[coluna] = df[coluna].dt.strftime('%d/%m/%Y%H:%M')
 
 def processar_datas(df, colunas):
-    
     for coluna in colunas:
         if 'Data Entrega' in coluna:
             df[coluna] = pd.to_datetime(df[coluna], dayfirst=True, errors='coerce') + pd.Timedelta(minutes=1)
@@ -411,7 +393,6 @@ for i, linha in enumerate(combined_df.index):
     data_entrega = combined_df.loc[linha, "Data Entrega"]   
     data_fim_descarregamento =  combined_df.loc[linha, "Fim Descarreg."]  
     baixado = str(combined_df.loc[linha, "BAIXADO"])  
-    #print(linha)
     if baixado == "SIM":
         continue
     else:
@@ -486,7 +467,6 @@ for i, linha in enumerate(combined_df.index):
                 pyautogui.sleep(2)
         else:
             combined_df.loc[linha, "BAIXADO"] = "NAO" 
-
 
 combined_df = combined_df[combined_df['BAIXADO'] != 'NAO']
 #print(combined_df)  
