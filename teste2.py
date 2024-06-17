@@ -5,9 +5,27 @@ import numpy as np
 import pyautogui
 import ctypes
 from datetime import datetime
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys          
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.service import Service
+from selenium.common.exceptions import TimeoutException
+import pyautogui
+from selenium.webdriver.common.action_chains import ActionChains
+import shutil
 
 caminho = os.getcwd() 
 caminho_sistema = caminho.replace("C", "T", 1)
+
+def click_selenium(selector, value):
+    try:
+        print("Clicando no botão...")
+        elemento = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((selector, value)))
+        elemento.click()
+    except Exception as e:
+        print(f"Erro ao clicar: {e}")
 
 def remover_hora(data_str):
     if pd.notna(data_str) and isinstance(data_str, str):
@@ -286,6 +304,74 @@ def formatar_datas(df, colunas):
         df[coluna] = pd.to_datetime(df[coluna], errors='coerce')
         df[coluna] = df[coluna].dt.strftime('%d/%m/%Y%H:%M')
 
+
+
+driver = webdriver.Chrome()
+driver.get("https://jettatransporte-my.sharepoint.com/:f:/g/personal/jetta_bi_jettatransporte_onmicrosoft_com/EiA6eCcrmHVOi0SVjgVS4eYBTgW6NmdHNlvRSINLlAOW5g?e=qyl9wK")
+driver.maximize_window()
+
+click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div[1]/span/span/button')
+
+try:
+    print("Clicar no elemento...")
+    corpo_email = WebDriverWait(driver, 360).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div[1]/span/span[2]/button')))
+    action_chains = ActionChains(driver)
+    action_chains.context_click(corpo_email).perform()
+except Exception as e:
+    print("Erro ao clicar no corpo do e-mail:", e)
+
+click_selenium(By.XPATH, '/html/body/div[3]/div/div/div/div/div/div/ul/li[4]/button/div/span')
+pyautogui.sleep(2)
+
+try:
+    print("Clicar no elemento...")
+    corpo_email = WebDriverWait(driver, 360).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[2]/div/div/div[3]/div/div[1]/span/span[2]/button')))
+    action_chains = ActionChains(driver)
+    action_chains.context_click(corpo_email).perform()
+except Exception as e:
+    print("Erro ao clicar no corpo do e-mail:", e)
+
+click_selenium(By.XPATH, '/html/body/div[3]/div/div/div/div/div/div/ul/li[4]/button/div/span')
+pyautogui.sleep(2)
+
+try:
+    print("Clicar no elemento...")
+    corpo_email = WebDriverWait(driver, 360).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[3]/div/div/div[3]/div/div[1]/span/span[2]/button')))
+    action_chains = ActionChains(driver)
+    action_chains.context_click(corpo_email).perform()
+except Exception as e:
+    print("Erro ao clicar no corpo do e-mail:", e)
+
+click_selenium(By.XPATH, '/html/body/div[3]/div/div/div/div/div/div/ul/li[4]/button/div/span')
+pyautogui.sleep(5)
+
+arquivos = [
+    'EntregaT2.xlsx',
+    'planilhaderotascc15.xlsx',
+    'planilhaderotascc19.xlsx'
+]
+
+diretorio_origem = r'C:/Users/Usuario/Downloads/'
+diretorio_destino = r'C:\Users\Usuario\Desktop\Robo-Baixa-Entregas'
+
+if not os.path.exists(diretorio_destino):
+    os.makedirs(diretorio_destino)
+
+for arquivo in arquivos:
+    caminho_origem = os.path.join(diretorio_origem, arquivo)
+    caminho_destino = os.path.join(diretorio_destino, arquivo)
+    try:
+        if os.path.exists(caminho_origem):
+            shutil.move(caminho_origem, caminho_destino)
+            print(f"Arquivo '{arquivo}' movido com sucesso para '{diretorio_destino}'")
+        else:
+            print(f"O arquivo de origem '{caminho_origem}' não existe.")
+    except Exception as e:
+        print(f"Erro ao mover o arquivo '{arquivo}': {e}")
+
+driver.quit()
+pyautogui.sleep(5)
+
 Planilha_CC19 = pd.read_excel("planilhaderotascc19.xlsx")
 colunas_para_remover = ['Série', 'Cnpj cliente', 'N° Carga', 'Status da baixa','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico']
 Planilha_CC19.drop(columns=colunas_para_remover, inplace=True)
@@ -349,29 +435,29 @@ combined_df = combined_df.drop_duplicates(subset='NF', keep='first')
 combined_df['BAIXADO'] = combined_df['BAIXADO'].fillna('NAO')
 #print(combined_df)
 
-# # # #LOGIN
-# # if check_caps_lock():
-# #     pyautogui.press("capslock")  # Desativa o CAPS LOCK se estiver ativado
-# # pyautogui.keyDown('win')
-# # pyautogui.press("m")
-# # pyautogui.keyUp('win')
-# # click_image('logo_rodopar_areatrabalho.png')#PC ESCRITORIO
-# # #click_image('logo_rodopar_areatrabalho_casa.png')#PC CASA
-# # pyautogui.click()
-# # click_image('conectar_rodopar.png')
-# # click_image('senha_rodopar_1.png')
-# # pyautogui.write("17@mudar")
-# # click_image('ok_primeiro_login.png')
-# # click_image('sim_primeiro_login.png')
-# # click_image('segundo_login.png')
-# # pyautogui.sleep(1)
-# # pyautogui.write("anascimento")
-# # pyautogui.press("tab")
-# # pyautogui.write("99060767")
-# # for i in range(2): 
-# #     pyautogui.press("enter")
-# # click_image('escolha_filial.png')
-# # pyautogui.press("enter")
+# # #LOGIN
+if check_caps_lock():
+    pyautogui.press("capslock")  # Desativa o CAPS LOCK se estiver ativado
+pyautogui.keyDown('win')
+pyautogui.press("m")
+pyautogui.keyUp('win')
+click_image('logo_rodopar_areatrabalho.png')#PC ESCRITORIO
+#click_image('logo_rodopar_areatrabalho_casa.png')#PC CASA
+pyautogui.click()
+click_image('conectar_rodopar.png')
+click_image('senha_rodopar_1.png')
+pyautogui.write("17@mudar")
+click_image('ok_primeiro_login.png')
+click_image('sim_primeiro_login.png')
+click_image('segundo_login.png')
+pyautogui.sleep(1)
+pyautogui.write("anascimento")
+pyautogui.press("tab")
+pyautogui.write("990607")
+for i in range(2): 
+    pyautogui.press("enter")
+click_image('filial_1.png')
+pyautogui.press("enter")
 
 click_image('botao_frota.png')
 pyautogui.press("alt")
