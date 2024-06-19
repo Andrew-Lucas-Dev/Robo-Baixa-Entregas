@@ -15,7 +15,8 @@ from selenium.common.exceptions import TimeoutException
 import pyautogui
 from selenium.webdriver.common.action_chains import ActionChains
 import shutil
-
+ 
+ 
 caminho = os.getcwd() 
 
 def click_image(image_path, confidence=0.9):
