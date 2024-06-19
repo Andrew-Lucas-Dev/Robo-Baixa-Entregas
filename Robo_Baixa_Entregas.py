@@ -464,8 +464,8 @@ if check_caps_lock():
 pyautogui.keyDown('win')
 pyautogui.press("m")
 pyautogui.keyUp('win')
-click_image('logo_rodopar_areatrabalho.png')#PC ESCRITORIO
-#click_image('logo_rodopar_areatrabalho_resumido.png')#PC ESCRITORIO
+#click_image('logo_rodopar_areatrabalho.png')#PC ESCRITORIO
+click_image('logo_rodopar_areatrabalho_resumido.png')#PC ESCRITORIO
 #click_image('logo_rodopar_areatrabalho_casa.png')#PC CASA
 pyautogui.click()
 click_image('conectar_rodopar.png')
