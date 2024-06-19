@@ -273,6 +273,24 @@ def atualizar_ocorrencia(image_path, confidence=0.9, max_attempts=5):
         attempts += 1
         pyautogui.sleep(1)
 
+def verificar_ok_final(image_path, confidence=0.9, max_attempts=5):
+    current_dir = os.path.dirname(__file__)  # Diretório atual do script
+    caminho_imagem = os.path.join(current_dir, r'IMAGENS', image_path)
+    attempts = 0
+    while attempts < max_attempts:
+        try:
+            position = pyautogui.locateOnScreen(caminho_imagem, confidence=confidence)
+            if position:
+                center_x = position.left + position.width // 2
+                center_y = position.top + position.height // 2
+                pyautogui.click(center_x, center_y)
+                print("Ok final encontrado com sucesso.")
+                break
+        except Exception as e:
+            print(f"Imagem do ok nao encontrada. Tentativa {attempts + 1} de {max_attempts}. Aguardando...")
+        attempts += 1
+        pyautogui.sleep(1)
+
 def check_caps_lock():
     return ctypes.windll.user32.GetKeyState(0x14) & 0xffff != 0
 
@@ -557,6 +575,8 @@ for i, linha in enumerate(combined_df.index):
                 atualizar_ocorrencia('yes.png')
                 click_image('OK.png')
                 pyautogui.sleep(2)
+
+            verificar_ok_final('OK.png')#vericação de segurança se aparece mais um ok no final
         else:
             combined_df.loc[linha, "BAIXADO"] = "NAO" 
 
@@ -564,3 +584,6 @@ combined_df = combined_df[combined_df['BAIXADO'] != 'NAO']
 #print(combined_df)  
 combined_df.to_excel('BASE_DADOS.xlsx', index=False)    
 click_image('botao_voltar.png')
+pyautogui.sleep(2)
+alt_press("f4")
+click_image('fechar_rodopar.png')
