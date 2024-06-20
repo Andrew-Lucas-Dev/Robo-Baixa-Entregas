@@ -43,7 +43,7 @@ try:
 except Exception as e:
     print("Erro ao clicar no corpo do e-mail:", e)
 
-click_selenium(By.XPATH, '/html/body/div[3]/div/div/div/div/div/div/ul/li[4]/button/div')
+click_selenium(By.XPATH, '/html/body/div[4]/div/div/div/div/div/div/ul/li[4]/button/div/span')
 
 # pyautogui.sleep(2)
 # driver.back()
