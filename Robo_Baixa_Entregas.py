@@ -379,7 +379,6 @@ diretorio_destino = r'C:\Users\Usuario\Desktop\Robo-Baixa-Entregas'
 # diretorio_origem = r'C:/Users/Andrew/Downloads/'
 # diretorio_destino = r'C:/Users/Andrew/Desktop/Robo-Baixa-Entregas'
 
-
 if not os.path.exists(diretorio_destino):
     os.makedirs(diretorio_destino)
 
