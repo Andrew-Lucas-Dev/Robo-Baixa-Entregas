@@ -464,18 +464,22 @@ combined_df['BAIXADO'] = combined_df['BAIXADO'].fillna('NAO')
 # # #LOGIN
 if check_caps_lock():
     pyautogui.press("capslock")  # Desativa o CAPS LOCK se estiver ativado
-# pyautogui.keyDown('win')
-# pyautogui.press("m")
-# pyautogui.keyUp('win')
+pyautogui.keyDown('win')
+pyautogui.press("m")
+pyautogui.keyUp('win')
 #click_image('logo_rodopar_areatrabalho.png')#PC ESCRITORIO
 click_image('logo_rodopar_areatrabalho_resumido.png')#PC ESCRITORIO
-#click_image('logo_rodopar_areatrabalho_casa.png')#PC CASA
+#click_image('logo_rodopar_areatrabalho.png')#PC CASA
 pyautogui.click()
 click_image('conectar_rodopar.png')
+#click_image('conectar_rodopar1.png')
 click_image('senha_rodopar_1.png')
+#click_image('senha_rodopar_2.png')
 pyautogui.write("17@mudar")
 click_image('ok_primeiro_login.png')
+#click_image('ok_primeiro_login2.png')
 click_image('sim_primeiro_login.png')
+#click_image('sim_primeiro_login2.png')
 click_image('segundo_login.png')    
 pyautogui.sleep(1)
 pyautogui.write("anascimento")
