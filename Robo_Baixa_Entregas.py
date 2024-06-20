@@ -460,7 +460,7 @@ combined_df = combined_df.drop_duplicates(subset='NF', keep='first')
 combined_df['BAIXADO'] = combined_df['BAIXADO'].fillna('NAO')
 #print(combined_df)
 
-# # #LOGIN
+# # # #LOGIN
 if check_caps_lock():
     pyautogui.press("capslock")  # Desativa o CAPS LOCK se estiver ativado
 pyautogui.keyDown('win')
