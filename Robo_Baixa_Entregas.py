@@ -374,10 +374,10 @@ arquivos = [
     'planilhaderotascc19.xlsx'
 ]
 
-# diretorio_origem = r'C:/Users/Usuario/Downloads/'
-# diretorio_destino = r'C:\Users\Usuario\Desktop\Robo-Baixa-Entregas'
-diretorio_origem = r'C:/Users/Andrew/Downloads/'
-diretorio_destino = r'C:/Users/Andrew/Desktop/Robo-Baixa-Entregas'
+diretorio_origem = r'C:/Users/Usuario/Downloads/'
+diretorio_destino = r'C:\Users\Usuario\Desktop\Robo-Baixa-Entregas'
+# diretorio_origem = r'C:/Users/Andrew/Downloads/'
+# diretorio_destino = r'C:/Users/Andrew/Desktop/Robo-Baixa-Entregas'
 
 
 if not os.path.exists(diretorio_destino):
@@ -468,18 +468,18 @@ pyautogui.keyDown('win')
 pyautogui.press("m")
 pyautogui.keyUp('win')
 #click_image('logo_rodopar_areatrabalho.png')#PC ESCRITORIO
-click_image('logo_rodopar_areatrabalho_resumido.png')#PC ESCRITORIO
-#click_image('logo_rodopar_areatrabalho.png')#PC CASA
+#click_image('logo_rodopar_areatrabalho_resumido.png')#PC ESCRITORIO
+click_image('logo_rodopar_areatrabalho.png')#PC CASA
 pyautogui.click()
-click_image('conectar_rodopar.png')
-#click_image('conectar_rodopar1.png')
-click_image('senha_rodopar_1.png')
-#click_image('senha_rodopar_2.png')
+#click_image('conectar_rodopar.png')
+click_image('conectar_rodopar1.png')
+#click_image('senha_rodopar_1.png')
+click_image('senha_rodopar_2.png')
 pyautogui.write("17@mudar")
-click_image('ok_primeiro_login.png')
-#click_image('ok_primeiro_login2.png')
-click_image('sim_primeiro_login.png')
-#click_image('sim_primeiro_login2.png')
+#click_image('ok_primeiro_login.png')
+click_image('ok_primeiro_login2.png')
+#click_image('sim_primeiro_login.png')
+click_image('sim_primeiro_login2.png')
 click_image('segundo_login.png')    
 pyautogui.sleep(1)
 pyautogui.write("anascimento")
