@@ -37,3 +37,30 @@ def click_image(image_path, confidence=0.9):
         pyautogui.sleep(1)
 
 click_image('logo_rodopar_areatrabalho_resumido.png')#PC ESCRITORIO
+#click_image('logo_rodopar_areatrabalho_casa.png')#PC CASA
+pyautogui.click()
+click_image('conectar_rodopar.png')
+click_image('senha_rodopar_1.png')
+pyautogui.write("17@mudar")
+click_image('ok_primeiro_login.png')
+click_image('sim_primeiro_login.png')
+click_image('segundo_login.png')    
+pyautogui.sleep(1)
+pyautogui.write("anascimento")
+pyautogui.press("tab")
+pyautogui.write("990607")
+for i in range(2): 
+    pyautogui.press("enter")
+click_image('filial_1.png')
+pyautogui.press("enter")
+
+click_image('botao_frota.png')
+pyautogui.press("alt")
+pyautogui.press("alt")
+pyautogui.press("right")
+for i in range(2): 
+    pyautogui.press("down")
+pyautogui.press("right")
+for i in range(10): 
+    pyautogui.press("down")
+pyautogui.press("enter")

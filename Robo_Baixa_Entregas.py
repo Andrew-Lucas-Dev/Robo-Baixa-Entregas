@@ -374,8 +374,11 @@ arquivos = [
     'planilhaderotascc19.xlsx'
 ]
 
-diretorio_origem = r'C:/Users/Usuario/Downloads/'
-diretorio_destino = r'C:\Users\Usuario\Desktop\Robo-Baixa-Entregas'
+# diretorio_origem = r'C:/Users/Usuario/Downloads/'
+# diretorio_destino = r'C:\Users\Usuario\Desktop\Robo-Baixa-Entregas'
+diretorio_origem = r'C:/Users/Andrew/Downloads/'
+diretorio_destino = r'C:/Users/Andrew/Desktop/Robo-Baixa-Entregas'
+
 
 if not os.path.exists(diretorio_destino):
     os.makedirs(diretorio_destino)
@@ -461,9 +464,9 @@ combined_df['BAIXADO'] = combined_df['BAIXADO'].fillna('NAO')
 # # #LOGIN
 if check_caps_lock():
     pyautogui.press("capslock")  # Desativa o CAPS LOCK se estiver ativado
-pyautogui.keyDown('win')
-pyautogui.press("m")
-pyautogui.keyUp('win')
+# pyautogui.keyDown('win')
+# pyautogui.press("m")
+# pyautogui.keyUp('win')
 #click_image('logo_rodopar_areatrabalho.png')#PC ESCRITORIO
 click_image('logo_rodopar_areatrabalho_resumido.png')#PC ESCRITORIO
 #click_image('logo_rodopar_areatrabalho_casa.png')#PC CASA
@@ -473,7 +476,7 @@ click_image('senha_rodopar_1.png')
 pyautogui.write("17@mudar")
 click_image('ok_primeiro_login.png')
 click_image('sim_primeiro_login.png')
-click_image('segundo_login.png')
+click_image('segundo_login.png')    
 pyautogui.sleep(1)
 pyautogui.write("anascimento")
 pyautogui.press("tab")
