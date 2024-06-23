@@ -300,12 +300,15 @@ def alt_press(key):
     pyautogui.keyUp('alt')
 
 def processar_coluna_data(df, coluna):
+    df[coluna] = pd.to_datetime(df[coluna], errors='coerce')
+    df[coluna] = df[coluna].dt.date
     df[coluna] = df[coluna].astype(str).str.strip()  # Converter para string e remover espaços em branco
     df[coluna] = pd.to_datetime(df[coluna], format='%Y-%m-%d', errors='coerce')  # Converter para datetime
     df[coluna] = df[coluna] + pd.Timedelta(hours=22)  # Adicionar o horário '22:00'
     df[coluna] = df[coluna].dt.strftime('%d/%m/%Y %H:%M')  # Formatar no formato desejado
 
 def processar_coluna_chegada(df, coluna):
+    df[coluna] = pd.to_datetime(df[coluna], errors='coerce')
     df[coluna] = df[coluna] + pd.Timedelta(hours=22)
     df[coluna] = df[coluna].dt.strftime('%d/%m/%Y%H:%M')
 
@@ -399,7 +402,7 @@ driver.quit()
 pyautogui.sleep(5)
 
 Planilha_CC19 = pd.read_excel("planilhaderotascc19.xlsx")
-colunas_para_remover = ['Série', 'Cnpj cliente', 'N° Carga', 'Status da baixa','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico']
+colunas_para_remover = ['Série', 'Cnpj cliente', 'N° Carga', 'Status da baixa','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico','NF com problema','Imagem Salva - Com Erro']
 Planilha_CC19.drop(columns=colunas_para_remover, inplace=True)
 Planilha_CC19['N° NF'] = pd.to_numeric(Planilha_CC19['N° NF'], errors='coerce')
 Planilha_CC19.dropna(subset=['N° NF'], inplace=True)

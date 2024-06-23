@@ -28,6 +28,8 @@ def remover_hora(data_str):
 
 
 def processar_coluna_data(df, coluna):
+    df[coluna] = pd.to_datetime(df[coluna], errors='coerce')
+    df[coluna] = df[coluna].dt.date
     df[coluna] = df[coluna].astype(str).str.strip()  # Converter para string e remover espaços em branco
     df[coluna] = pd.to_datetime(df[coluna], format='%Y-%m-%d', errors='coerce')  # Converter para datetime
     df[coluna] = df[coluna] + pd.Timedelta(hours=22)  # Adicionar o horário '22:00'
@@ -69,10 +71,10 @@ for coluna in colunas_de_data:
 processar_datas(Planilha_CC15, colunas_de_data)
 processar_coluna_chegada(Planilha_CC15,'Data Chegada')
 Planilha_CC15 = Planilha_CC15.dropna(axis=1, how='all')
-#print(Planilha_CC15['Data Chegada'])
+#print(Planilha_CC15)
 
 Planilha_CC19 = pd.read_excel("planilhaderotascc19.xlsx")
-colunas_para_remover = ['Série', 'Cnpj cliente', 'N° Carga', 'Status da baixa','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico']
+colunas_para_remover = ['Série', 'Cnpj cliente', 'N° Carga', 'Status da baixa','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico','NF com problema','Imagem Salva - Com Erro']
 Planilha_CC19.drop(columns=colunas_para_remover, inplace=True)
 Planilha_CC19['N° NF'] = pd.to_numeric(Planilha_CC19['N° NF'], errors='coerce')
 Planilha_CC19.dropna(subset=['N° NF'], inplace=True)
@@ -88,8 +90,11 @@ for coluna in colunas_de_data:
 processar_datas(Planilha_CC19, colunas_de_data)
 processar_coluna_chegada(Planilha_CC19,'Data Chegada')
 Planilha_CC19 = Planilha_CC19.dropna(axis=1, how='all')
-#print(Planilha_CC19['Data Chegada'])
+print(Planilha_CC19)
 
-for i, linha in enumerate(Planilha_CC15.index):
-    data_chegada = Planilha_CC15.loc[linha, "Data Chegada"]
-    print(data_chegada)
+
+# for i, linha in enumerate(Planilha_CC15.index):
+#     data_chegada = Planilha_CC15.loc[linha, "Data Chegada"]
+#     data_entrega = Planilha_CC15.loc[linha, "Data Entrega"]   
+#     data_fim_descarregamento =  Planilha_CC15.loc[linha, "Fim Descarreg."]  
+#     print(data_entrega)
