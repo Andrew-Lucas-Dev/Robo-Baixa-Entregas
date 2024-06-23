@@ -34,6 +34,7 @@ def processar_coluna_data(df, coluna):
     df[coluna] = df[coluna].dt.strftime('%d/%m/%Y %H:%M')  # Formatar no formato desejado
 
 def processar_coluna_chegada(df, coluna):
+    df[coluna] = pd.to_datetime(df[coluna], errors='coerce')
     df[coluna] = df[coluna] + pd.Timedelta(hours=22)
     df[coluna] = df[coluna].dt.strftime('%d/%m/%Y%H:%M')
 
@@ -68,4 +69,27 @@ for coluna in colunas_de_data:
 processar_datas(Planilha_CC15, colunas_de_data)
 processar_coluna_chegada(Planilha_CC15,'Data Chegada')
 Planilha_CC15 = Planilha_CC15.dropna(axis=1, how='all')
-print(Planilha_CC15['Data Chegada'])
+#print(Planilha_CC15['Data Chegada'])
+
+Planilha_CC19 = pd.read_excel("planilhaderotascc19.xlsx")
+colunas_para_remover = ['Série', 'Cnpj cliente', 'N° Carga', 'Status da baixa','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico']
+Planilha_CC19.drop(columns=colunas_para_remover, inplace=True)
+Planilha_CC19['N° NF'] = pd.to_numeric(Planilha_CC19['N° NF'], errors='coerce')
+Planilha_CC19.dropna(subset=['N° NF'], inplace=True)
+Planilha_CC19['N° NF'] = Planilha_CC19['N° NF'].astype(int)
+Planilha_CC19 = Planilha_CC19.rename(columns={'N° NF': 'NF', 'Data NF': 'DATA NOTA FISCAL', 'Data': 'Data Chegada', 'Status da entrega': 'STATUS'})
+Planilha_CC19['Data Entrega'] = Planilha_CC19['Data Chegada']
+Planilha_CC19['Fim Descarreg.'] = Planilha_CC19['Data Chegada']
+Planilha_CC19['DATA NOTA FISCAL'] = pd.to_datetime(Planilha_CC19['DATA NOTA FISCAL'])
+Planilha_CC19['DATA NOTA FISCAL'] = Planilha_CC19['DATA NOTA FISCAL'].dt.strftime('%d/%m/%Y')
+colunas_de_data = ['Data Entrega', 'Fim Descarreg.']
+for coluna in colunas_de_data:
+    processar_coluna_data(Planilha_CC19, coluna)
+processar_datas(Planilha_CC19, colunas_de_data)
+processar_coluna_chegada(Planilha_CC19,'Data Chegada')
+Planilha_CC19 = Planilha_CC19.dropna(axis=1, how='all')
+#print(Planilha_CC19['Data Chegada'])
+
+for i, linha in enumerate(Planilha_CC15.index):
+    data_chegada = Planilha_CC15.loc[linha, "Data Chegada"]
+    print(data_chegada)

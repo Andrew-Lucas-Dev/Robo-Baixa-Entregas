@@ -306,6 +306,7 @@ def processar_coluna_data(df, coluna):
     df[coluna] = df[coluna].dt.strftime('%d/%m/%Y %H:%M')  # Formatar no formato desejado
 
 def processar_coluna_chegada(df, coluna):
+    df[coluna] = pd.to_datetime(df[coluna], errors='coerce')
     df[coluna] = df[coluna] + pd.Timedelta(hours=22)
     df[coluna] = df[coluna].dt.strftime('%d/%m/%Y%H:%M')
 
