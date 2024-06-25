@@ -63,14 +63,14 @@ Planilha_CC15 = Planilha_CC15.rename(columns={'N° NF': 'NF', 'Data NF': 'DATA N
 Planilha_CC15['Data Entrega'] = Planilha_CC15['Data Chegada']
 Planilha_CC15['Fim Descarreg.'] = Planilha_CC15['Data Chegada']
 Planilha_CC15['STATUS'] = Planilha_CC15['STATUS'].fillna('EM ROTA')
-Planilha_CC15['DATA NOTA FISCAL'] = pd.to_datetime(Planilha_CC15['DATA NOTA FISCAL'])
-Planilha_CC15['DATA NOTA FISCAL'] = Planilha_CC15['DATA NOTA FISCAL'].dt.strftime('%d/%m/%Y')
-colunas_de_data = ['Data Entrega', 'Fim Descarreg.']
-for coluna in colunas_de_data:
-    processar_coluna_data(Planilha_CC15, coluna) 
-processar_datas(Planilha_CC15, colunas_de_data)
-processar_coluna_chegada(Planilha_CC15,'Data Chegada')
-Planilha_CC15 = Planilha_CC15.dropna(axis=1, how='all')
+# Planilha_CC15['DATA NOTA FISCAL'] = pd.to_datetime(Planilha_CC15['DATA NOTA FISCAL'])
+# Planilha_CC15['DATA NOTA FISCAL'] = Planilha_CC15['DATA NOTA FISCAL'].dt.strftime('%d/%m/%Y')
+# colunas_de_data = ['Data Entrega', 'Fim Descarreg.']
+# for coluna in colunas_de_data:
+#     processar_coluna_data(Planilha_CC15, coluna) 
+# processar_datas(Planilha_CC15, colunas_de_data)
+# processar_coluna_chegada(Planilha_CC15,'Data Chegada')
+# Planilha_CC15 = Planilha_CC15.dropna(axis=1, how='all')
 #print(Planilha_CC15)
 
 Planilha_CC19 = pd.read_excel("planilhaderotascc19.xlsx")
