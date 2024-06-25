@@ -90,11 +90,13 @@ for coluna in colunas_de_data:
 processar_datas(Planilha_CC19, colunas_de_data)
 processar_coluna_chegada(Planilha_CC19,'Data Chegada')
 Planilha_CC19 = Planilha_CC19.dropna(axis=1, how='all')
-print(Planilha_CC19)
+#print(Planilha_CC19)
 
 
-# for i, linha in enumerate(Planilha_CC15.index):
-#     data_chegada = Planilha_CC15.loc[linha, "Data Chegada"]
-#     data_entrega = Planilha_CC15.loc[linha, "Data Entrega"]   
-#     data_fim_descarregamento =  Planilha_CC15.loc[linha, "Fim Descarreg."]  
-#     print(data_entrega)
+for i, linha in enumerate(Planilha_CC15.index):
+    data_chegada = Planilha_CC15.loc[linha, "Data Chegada"]
+    data_entrega = Planilha_CC15.loc[linha, "Data Entrega"]   
+    data_fim_descarregamento =  Planilha_CC15.loc[linha, "Fim Descarreg."]  
+    data_nota = Planilha_CC15.loc[linha, "DATA NOTA FISCAL"]  
+    nota = Planilha_CC15.loc[linha, "NF"]
+    print(f'nota:{nota} data:{data_nota}')
