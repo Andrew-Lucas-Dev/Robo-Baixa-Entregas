@@ -17,6 +17,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 import shutil
 from datetime import datetime, timedelta
 
+time = 0.5
 caminho = os.getcwd() 
 caminho_sistema = caminho.replace("C", "T", 1)
 
@@ -27,6 +28,42 @@ def click_selenium(selector, value):
         elemento.click()
     except Exception as e:
         print(f"Erro ao clicar: {e}")
+
+
+
+def click_(image_path, confidence=0.9):
+    current_dir = os.path.dirname(__file__)  # Diretório atual do script
+    caminho_imagem = caminho + r'\IMAGENS'
+    image_path = os.path.join(current_dir, caminho_imagem, image_path) 
+    try:
+        position = pyautogui.locateOnScreen(image_path, confidence=confidence)
+        if position:
+            center_x = position.left + position.width // 2
+            center_y = position.top + position.height // 2
+            pyautogui.click(center_x, center_y)
+            print("Imagem foi encontrada na tela.")
+    except Exception as e:
+        print("Imagem não encontrada na tela. Aguardando...")
+
+
+#enquanto o campo de data nota nao estiver vazio apertar os botoes
+def finalizar_baixa(image_path, confidence=0.9):
+    current_dir = os.path.dirname(__file__)  # Diretório atual do script
+    caminho_imagem = caminho + r'\IMAGENS'
+    image_path = os.path.join(current_dir, caminho_imagem, image_path) 
+    while True:
+        try:
+            position = pyautogui.locateOnScreen(image_path, confidence=confidence)
+            if position:
+                print("Imagem foi encontrada na tela.")
+                break
+        except Exception as e:
+            click_('yes.png')
+            click_('yes_marcado.png')
+            click_('ok.png')
+            click_('cancelar.png')
+            print("Imagem não encontrada na tela. Aguardando...")
+        pyautogui.sleep(0.5)
 
 def remover_hora(data_str):
     if pd.notna(data_str) and isinstance(data_str, str):
@@ -327,80 +364,80 @@ def formatar_datas(df, colunas):
         df[coluna] = df[coluna].dt.strftime('%d/%m/%Y%H:%M')
     
 
-driver = webdriver.Chrome()
-driver.get("https://jettatransporte-my.sharepoint.com/:f:/g/personal/jetta_bi_jettatransporte_onmicrosoft_com/EiA6eCcrmHVOi0SVjgVS4eYBTgW6NmdHNlvRSINLlAOW5g?e=qyl9wK")
-driver.maximize_window()
+# driver = webdriver.Chrome()
+# driver.get("https://jettatransporte-my.sharepoint.com/:f:/g/personal/jetta_bi_jettatransporte_onmicrosoft_com/EiA6eCcrmHVOi0SVjgVS4eYBTgW6NmdHNlvRSINLlAOW5g?e=qyl9wK")
+# driver.maximize_window()
 
-click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div[1]/span/span/button')
+# click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div[1]/span/span/button')
                           
-click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div[1]/span/span/button')
+# click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div[1]/span/span/button')
 
-try:
-    print("Pasta Planilha Bahia...")
-    corpo_email = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div/div/div/div[3]/div/div[1]/span/span/button')))
-    action_chains = ActionChains(driver)                                                
-    action_chains.context_click(corpo_email).perform()
-except Exception as e:
-    print("Erro ao clicar no corpo do e-mail:", e)
-click_selenium(By.XPATH, '/html/body/div[4]/div/div/div/div/div/div/ul/li[4]/button/div/span')
-pyautogui.sleep(2)
-driver.back()
-pyautogui.sleep(2)
+# try:
+#     print("Pasta Planilha Bahia...")
+#     corpo_email = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div/div/div/div[3]/div/div[1]/span/span/button')))
+#     action_chains = ActionChains(driver)                                                
+#     action_chains.context_click(corpo_email).perform()
+# except Exception as e:
+#     print("Erro ao clicar no corpo do e-mail:", e)
+# click_selenium(By.XPATH, '/html/body/div[4]/div/div/div/div/div/div/ul/li[4]/button/div/span')
+# pyautogui.sleep(2)
+# driver.back()
+# pyautogui.sleep(2)
 
-click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[2]/div/div/div[3]/div/div[1]/span/span/button')
-try:
-    print("Pasta Planilha CC15...")
-    corpo_email = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div/div/div/div[3]/div/div[1]/span/span/button')))
-    action_chains = ActionChains(driver)
-    action_chains.context_click(corpo_email).perform()
-except Exception as e:
-    print("Erro ao clicar no corpo do e-mail:", e)
-click_selenium(By.XPATH, '/html/body/div[4]/div/div/div/div/div/div/ul/li[4]/button/div/span')
-pyautogui.sleep(2)
-driver.back()
-pyautogui.sleep(2)
+# click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[2]/div/div/div[3]/div/div[1]/span/span/button')
+# try:
+#     print("Pasta Planilha CC15...")
+#     corpo_email = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div/div/div/div[3]/div/div[1]/span/span/button')))
+#     action_chains = ActionChains(driver)
+#     action_chains.context_click(corpo_email).perform()
+# except Exception as e:
+#     print("Erro ao clicar no corpo do e-mail:", e)
+# click_selenium(By.XPATH, '/html/body/div[4]/div/div/div/div/div/div/ul/li[4]/button/div/span')
+# pyautogui.sleep(2)
+# driver.back()
+# pyautogui.sleep(2)
 
-click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[3]/div/div/div[3]/div/div[1]/span/span/button')
-try:
-    print("Pasta Planilha CC19...")
-    corpo_email = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div/div/div/div[3]/div/div[1]/span/span/button')))
-    action_chains = ActionChains(driver)
-    action_chains.context_click(corpo_email).perform()
-except Exception as e:
-    print("Erro ao clicar no corpo do e-mail:", e)
-click_selenium(By.XPATH, '/html/body/div[4]/div/div/div/div/div/div/ul/li[4]/button/div/span')
+# click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[3]/div/div/div[3]/div/div[1]/span/span/button')
+# try:
+#     print("Pasta Planilha CC19...")
+#     corpo_email = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div/div/div/div[3]/div/div[1]/span/span/button')))
+#     action_chains = ActionChains(driver)
+#     action_chains.context_click(corpo_email).perform()
+# except Exception as e:
+#     print("Erro ao clicar no corpo do e-mail:", e)
+# click_selenium(By.XPATH, '/html/body/div[4]/div/div/div/div/div/div/ul/li[4]/button/div/span')
 
-pyautogui.sleep(5)
-driver.quit()
+# pyautogui.sleep(5)
+# driver.quit()
 
-arquivos = [
-    'EntregaT2.xlsx',
-    'planilhaderotascc15.xlsx',
-    'planilhaderotascc19.xlsx'
-]
+# arquivos = [
+#     'EntregaT2.xlsx',
+#     'planilhaderotascc15.xlsx',
+#     'planilhaderotascc19.xlsx'
+# ]
 
-diretorio_origem = r'C:/Users/Usuario/Downloads/'
-diretorio_destino = r'C:\Users\Usuario\Desktop\Robo-Baixa-Entregas'
-# diretorio_origem = r'C:/Users/Andrew/Downloads/'
-# diretorio_destino = r'C:/Users/Andrew/Desktop/Robo-Baixa-Entregas'
+# diretorio_origem = r'C:/Users/Usuario/Downloads/'
+# diretorio_destino = r'C:\Users\Usuario\Desktop\Robo-Baixa-Entregas'
+# # diretorio_origem = r'C:/Users/Andrew/Downloads/'
+# # diretorio_destino = r'C:/Users/Andrew/Desktop/Robo-Baixa-Entregas'
 
-if not os.path.exists(diretorio_destino):
-    os.makedirs(diretorio_destino)
+# if not os.path.exists(diretorio_destino):
+#     os.makedirs(diretorio_destino)
 
-for arquivo in arquivos:
-    caminho_origem = os.path.join(diretorio_origem, arquivo)
-    caminho_destino = os.path.join(diretorio_destino, arquivo)
-    try:
-        if os.path.exists(caminho_origem):
-            shutil.move(caminho_origem, caminho_destino)
-            print(f"Arquivo '{arquivo}' movido com sucesso para '{diretorio_destino}'")
-        else:
-            print(f"O arquivo de origem '{caminho_origem}' não existe.")
-    except Exception as e:
-        print(f"Erro ao mover o arquivo '{arquivo}': {e}")
+# for arquivo in arquivos:
+#     caminho_origem = os.path.join(diretorio_origem, arquivo)
+#     caminho_destino = os.path.join(diretorio_destino, arquivo)
+#     try:
+#         if os.path.exists(caminho_origem):
+#             shutil.move(caminho_origem, caminho_destino)
+#             print(f"Arquivo '{arquivo}' movido com sucesso para '{diretorio_destino}'")
+#         else:
+#             print(f"O arquivo de origem '{caminho_origem}' não existe.")
+#     except Exception as e:
+#         print(f"Erro ao mover o arquivo '{arquivo}': {e}")
 
-driver.quit()
-pyautogui.sleep(5)
+# driver.quit()
+# pyautogui.sleep(5)
 
 Planilha_CC19 = pd.read_excel("planilhaderotascc19.xlsx")
 colunas_para_remover = ['Série', 'Cnpj cliente', 'N° Carga', 'Status da baixa','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico','NF com problema','Imagem Salva - Com Erro']
@@ -466,46 +503,46 @@ combined_df['BAIXADO'] = combined_df['BAIXADO'].fillna('NAO')
 #print(combined_df)
 
 # # # #LOGIN
-if check_caps_lock():
-    pyautogui.press("capslock")  # Desativa o CAPS LOCK se estiver ativado
-pyautogui.keyDown('win')
-pyautogui.press("m")
-pyautogui.keyUp('win')
-click_image('logo_rodopar_areatrabalho.png')#PC ESCRITORIO
-#click_image('logo_rodopar_areatrabalho_resumido.png')#PC ESCRITORIO
-#click_image('logo_rodopar_areatrabalho.png')#PC CASA
-pyautogui.click()
-click_image('conectar_rodopar.png')
-#click_image('conectar_rodopar1.png')
-click_image('senha_rodopar_1.png')
-#click_image('senha_rodopar_2.png')
-pyautogui.write("18@mudar")
-click_image('ok_primeiro_login.png')
-#click_image('ok_primeiro_login2.png')
-click_image('sim_primeiro_login.png')
-#click_image('sim_primeiro_login2.png')
-click_image('segundo_login.png')    
-pyautogui.sleep(1)
-pyautogui.write("anascimento")
-pyautogui.press("tab")
-pyautogui.write("99060767")
-for i in range(2): 
-    pyautogui.press("enter")
-click_image('filial_1.png')
-pyautogui.press("enter")
+# if check_caps_lock():
+#     pyautogui.press("capslock")  # Desativa o CAPS LOCK se estiver ativado
+# pyautogui.keyDown('win')
+# pyautogui.press("m")
+# pyautogui.keyUp('win')
+# click_image('logo_rodopar_areatrabalho.png')#PC ESCRITORIO
+# #click_image('logo_rodopar_areatrabalho_resumido.png')#PC ESCRITORIO
+# #click_image('logo_rodopar_areatrabalho.png')#PC CASA
+# pyautogui.click()
+# click_image('conectar_rodopar.png')
+# #click_image('conectar_rodopar1.png')
+# click_image('senha_rodopar_1.png')
+# #click_image('senha_rodopar_2.png')
+# pyautogui.write("18@mudar")
+# click_image('ok_primeiro_login.png')
+# #click_image('ok_primeiro_login2.png')
+# click_image('sim_primeiro_login.png')
+# #click_image('sim_primeiro_login2.png')
+# click_image('segundo_login.png')    
+# pyautogui.sleep(1)
+# pyautogui.write("anascimento")
+# pyautogui.press("tab")
+# pyautogui.write("99060767")
+# for i in range(2): 
+#     pyautogui.press("enter")
+# click_image('filial_1.png')
+# pyautogui.press("enter")
 
-click_image('botao_frota.png')
-pyautogui.press("alt")
-pyautogui.press("alt")
-pyautogui.press("right")
-for i in range(2): 
-    pyautogui.press("down")
-pyautogui.press("right")
-for i in range(10): 
-    pyautogui.press("down")
-pyautogui.press("enter")
+# click_image('botao_frota.png')
+# pyautogui.press("alt")
+# pyautogui.press("alt")
+# pyautogui.press("right")
+# for i in range(2): 
+#     pyautogui.press("down")
+# pyautogui.press("right")
+# for i in range(10): 
+#     pyautogui.press("down")
+# pyautogui.press("enter")
 numero_linhas = len(combined_df)
-# #print(numero_linhas)
+click_image('cancelar.png')
 
 for i, linha in enumerate(combined_df.index):
     nf = combined_df.loc[linha, "NF"]
@@ -538,29 +575,29 @@ for i, linha in enumerate(combined_df.index):
         status = 'ENTREGUE'
         falta = numero_linhas - i      
         print(f'nota:{nf} data nota:{data_nota_fiscal} data chegada:{data_chegada} data entrega:{data_entrega} fim descarregamento:{data_fim_descarregamento} falta:{falta}')
-        click_image('cancelar.png')
+        
         click_image('digitar_data.png')
         for i in range(10):
             pyautogui.press("backspace")
         pyautogui.write(str(data_nota_fiscal))
-        pyautogui.sleep(1)  
+        pyautogui.sleep(time)  
         click_nota('digitar_nota.png')
-        pyautogui.sleep(1)
+        pyautogui.sleep(time)
         pyautogui.write(str(nf))
-        pyautogui.sleep(1)
+        pyautogui.sleep(time)
         click_image('atualizar.png')
-        pyautogui.sleep(1)
+        pyautogui.sleep(time)
         if imagem_encontrada('nota_encontrada.png'):
             combined_df.loc[linha, "BAIXADO"] = "SIM"        
             click_image('salvar_filial.png')
             pyautogui.write("1")
-            pyautogui.sleep(1)       
+            pyautogui.sleep(time)       
             click_image('salvar_ocorrencia.png')
             pyautogui.write("1")
-            pyautogui.sleep(1)      
+            pyautogui.sleep(time)      
             click_image('salvar_observ.png')
             pyautogui.write("1")
-            pyautogui.sleep(1)           
+            pyautogui.sleep(time)           
             pyautogui.press("tab")
             verificar_campo('campo_filial.png')
             verificar_campo('campo_observacao.png')
@@ -569,40 +606,27 @@ for i, linha in enumerate(combined_df.index):
             for i in range(10):
                 pyautogui.press("backspace")
             pyautogui.write(str(data_chegada))
-            pyautogui.sleep(1)
+            pyautogui.sleep(time)
             pyautogui.press('tab')
             pyautogui.write(str(data_entrega))
-            pyautogui.sleep(1)
+            pyautogui.sleep(time)
             pyautogui.press('tab')
             pyautogui.write(str(data_fim_descarregamento))
-            pyautogui.sleep(1)
+            pyautogui.sleep(time)
             pyautogui.press('tab')
             pyautogui.write("aaa")
-            pyautogui.sleep(1)
+            pyautogui.sleep(time)
             for i in range(2):
                 pyautogui.press("tab")
             pyautogui.write("111")
-            pyautogui.sleep(1)
+            pyautogui.sleep(time)
             click_image('efetuar_baixa.png')
-            image_erro('mensagem_erro.png','mensagem_deu_certo.png','campo_filial.png','imagem_baixar_entrega.png')
-            erro_efetuar('Erro_sistema_caiu.png')
-            click_image('yes.png')
-            pyautogui.sleep(2)
-            if baixada_ou_nao('yes.png', 'ok.png'):
-                print("Processo concluído com sucesso.")
-            else:
-                #deseja atualizar a ocorrencia
-                atualizar_ocorrencia('yes.png')
-                verificar_ok_final('yes.png')
-                click_image('OK.png')
-                pyautogui.sleep(2)
-
-            verificar_ok_final('OK.png')#vericação de segurança se aparece mais um ok no final
+            pyautogui.sleep(time)
+            finalizar_baixa('digitar_data.png')
         else:
             combined_df.loc[linha, "BAIXADO"] = "NAO" 
 
 combined_df = combined_df[combined_df['BAIXADO'] != 'NAO']
-#print(combined_df)  
 combined_df.to_excel('BASE_DADOS.xlsx', index=False)    
 click_image('botao_voltar.png')
 pyautogui.sleep(2)

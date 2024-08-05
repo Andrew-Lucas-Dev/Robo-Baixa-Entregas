@@ -15,39 +15,46 @@ from selenium.common.exceptions import TimeoutException
 import pyautogui
 from selenium.webdriver.common.action_chains import ActionChains
 import shutil
- 
- 
+from datetime import datetime, timedelta
+
 caminho = os.getcwd() 
+caminho_sistema = caminho.replace("C", "T", 1)
 
-def click_selenium(selector, value):
+def click_(image_path, confidence=0.9):
+    current_dir = os.path.dirname(__file__)  # Diretório atual do script
+    caminho_imagem = caminho + r'\IMAGENS'
+    image_path = os.path.join(current_dir, caminho_imagem, image_path) 
     try:
-        print("Clicando no botão...")
-        elemento = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((selector, value)))
-        elemento.click()
+        position = pyautogui.locateOnScreen(image_path, confidence=confidence)
+        if position:
+            center_x = position.left + position.width // 2
+            center_y = position.top + position.height // 2
+            pyautogui.click(center_x, center_y)
+            print("Imagem foi encontrada na tela.")
     except Exception as e:
-        print(f"Erro ao clicar: {e}")
+        print("Imagem não encontrada na tela. Aguardando...")
+    pyautogui.sleep(1)
 
-driver = webdriver.Chrome()
-driver.get("https://jettatransporte-my.sharepoint.com/:f:/g/personal/jetta_bi_jettatransporte_onmicrosoft_com/EiA6eCcrmHVOi0SVjgVS4eYBTgW6NmdHNlvRSINLlAOW5g?e=qyl9wK")
-driver.maximize_window()
+#enquanto o campo de data nota nao estiver vazio apertar os botoes
+def finalizar_baixa(image_path, confidence=0.9):
+    current_dir = os.path.dirname(__file__)  # Diretório atual do script
+    caminho_imagem = caminho + r'\IMAGENS'
+    image_path = os.path.join(current_dir, caminho_imagem, image_path) 
+    while True:
+        try:
+            position = pyautogui.locateOnScreen(image_path, confidence=confidence)
+            if position:
+                center_x = position.left + position.width // 2
+                center_y = position.top + position.height // 2
+                pyautogui.click(center_x, center_y)
+                print("Imagem foi encontrada na tela.")
+                break
+        except Exception as e:
+            click_('yes.png')
+            click_('yes_marcado.png')
+            click_('ok.png')
+            click_('cancelar.png')
+            print("Imagem não encontrada na tela. Aguardando...")
+        pyautogui.sleep(1)
 
-click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div[1]/span/span/button')
-
-
-click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[3]/div/div/div[3]/div/div[1]/span/span/button')
-try:
-    print("Pasta Planilha CC19...")
-    corpo_email = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div/div/div/div[3]/div/div[1]/span/span/button')))
-    action_chains = ActionChains(driver)
-    action_chains.context_click(corpo_email).perform()
-except Exception as e:
-    print("Erro ao clicar no corpo do e-mail:", e)
-click_selenium(By.XPATH, '/html/body/div[4]/div/div/div/div/div/div/ul/li[4]/button/div/span')
-
-pyautogui.sleep(5)
-driver.quit()
-
-# pyautogui.sleep(2)
-# driver.back()
-# pyautogui.sleep(2)
-
+finalizar_baixa('digitar_data.png')
