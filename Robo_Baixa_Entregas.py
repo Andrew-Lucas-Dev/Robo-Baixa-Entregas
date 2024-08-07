@@ -29,8 +29,6 @@ def click_selenium(selector, value):
     except Exception as e:
         print(f"Erro ao clicar: {e}")
 
-
-
 def click_(image_path, confidence=0.9):
     current_dir = os.path.dirname(__file__)  # Diretório atual do script
     caminho_imagem = caminho + r'\IMAGENS'
@@ -44,7 +42,6 @@ def click_(image_path, confidence=0.9):
             print("Imagem foi encontrada na tela.")
     except Exception as e:
         print("Imagem não encontrada na tela. Aguardando...")
-
 
 #enquanto o campo de data nota nao estiver vazio apertar os botoes
 def finalizar_baixa(image_path, confidence=0.9):
@@ -369,9 +366,9 @@ driver.get("https://jettatransporte-my.sharepoint.com/:f:/g/personal/jetta_bi_je
 driver.maximize_window()
 
 click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div[1]/span/span/button')
-                          
+ 
 click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div[1]/span/span/button')
-
+                        
 try:
     print("Pasta Planilha Bahia...")
     corpo_email = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div/div/div/div[3]/div/div[1]/span/span/button')))
@@ -625,6 +622,7 @@ for i, linha in enumerate(combined_df.index):
             finalizar_baixa('digitar_data.png')
         else:
             combined_df.loc[linha, "BAIXADO"] = "NAO" 
+            click_image('cancelar.png')
 
 combined_df = combined_df[combined_df['BAIXADO'] != 'NAO']
 combined_df.to_excel('BASE_DADOS.xlsx', index=False)    
