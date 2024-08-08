@@ -84,6 +84,42 @@ def click_image(image_path, confidence=0.9):
             print("Imagem não encontrada na tela. Aguardando...")
         pyautogui.sleep(1)
 
+def confirmacao_preenchido(image_path,image_path2,image_path3, confidence=0.9):
+    current_dir = os.path.dirname(__file__)  # Diretório atual do script
+    caminho_imagem = caminho + r'\IMAGENS'
+    image_path = os.path.join(current_dir, caminho_imagem, image_path)
+    image_path2 = os.path.join(current_dir, caminho_imagem, image_path2) 
+    image_path3 = os.path.join(current_dir, caminho_imagem, image_path3)  
+    while True:
+        try:
+            # Tentar localizar qualquer uma das imagens na tela
+            position = (pyautogui.locateOnScreen(image_path, confidence=confidence) or
+                        pyautogui.locateOnScreen(image_path2, confidence=confidence) or
+                        pyautogui.locateOnScreen(image_path3, confidence=confidence))
+            
+            if position:
+                print('Imagem foi encontrada na tela. Executar uma ação.')
+                click_image('cancelar.png')
+                click_image('referencia.png')
+                for i in range(10):
+                    pyautogui.press("backspace")
+                pyautogui.write(str(referencia))
+                click_image('digitar_data.png')
+                for i in range(10):
+                    pyautogui.press("backspace")
+                pyautogui.write(str(data_nota_fiscal))
+                pyautogui.sleep(time)  
+                click_nota('digitar_nota.png')
+                pyautogui.sleep(time)
+                pyautogui.write(str(nf))
+                pyautogui.sleep(time)
+                click_image('atualizar.png')
+                pyautogui.sleep(time)
+        except Exception as e:
+            print(f"Ocorreu um erro: {e}")
+            break  # Saia do loop em caso de erro inesperado
+
+        pyautogui.sleep(1)
 def baixada_ou_nao(yes, ok, confidence=0.9):
     current_dir = os.path.dirname(__file__)  # Diretório atual do script
     caminho_imagem = caminho + r'\IMAGENS'
@@ -145,7 +181,7 @@ def imagem_encontrada(image_path, confidence=0.9, max_attempts=5):
     
     click_image('cancelar.png')
     click_image('digitar_data.png')
-    for i in range(10):
+    for i in range(15):
         pyautogui.press("backspace")
     pyautogui.write(str(data_nota_fiscal))
     pyautogui.sleep(1)  
@@ -155,6 +191,14 @@ def imagem_encontrada(image_path, confidence=0.9, max_attempts=5):
     pyautogui.sleep(0.2)
     pyautogui.write(str(nf))
     pyautogui.sleep(1)
+    confirmacao_preenchido('referencia.png','digitar_data.png','digitar_nota.png')
+    for i in range(15):
+        pyautogui.press("backspace")
+    pyautogui.write('00')
+    pyautogui.sleep(0.2)
+    pyautogui.write(str(nf))
+    pyautogui.sleep(1)
+    pyautogui.sleep(1)
     click_image('atualizar.png')
     pyautogui.sleep(1)
     for attempt in range(max_attempts):
@@ -162,6 +206,7 @@ def imagem_encontrada(image_path, confidence=0.9, max_attempts=5):
             position = pyautogui.locateOnScreen(image_path, confidence=confidence)
             if position:
                 print("Nota encontrada na tela.")
+                confirmacao_preenchido('referencia.png','digitar_data.png','digitar_nota.png')
                 return True
         except Exception as e:
             print("Nota não encontrada na tela. Aguardando...")
@@ -437,7 +482,7 @@ def formatar_datas(df, colunas):
 # pyautogui.sleep(5)
 
 Planilha_CC19 = pd.read_excel("planilhaderotascc19.xlsx")
-colunas_para_remover = ['Série', 'Cnpj cliente', 'N° Carga', 'Status da baixa','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico','NF com problema','Imagem Salva - Com Erro']
+colunas_para_remover = ['Série', 'Cnpj cliente', 'Status da baixa','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico','NF com problema','Imagem Salva - Com Erro']
 Planilha_CC19.drop(columns=colunas_para_remover, inplace=True)
 Planilha_CC19['N° NF'] = pd.to_numeric(Planilha_CC19['N° NF'], errors='coerce')
 Planilha_CC19.dropna(subset=['N° NF'], inplace=True)
@@ -456,7 +501,7 @@ Planilha_CC19 = Planilha_CC19.dropna(axis=1, how='all')
 #print(Planilha_CC19['Data Chegada'])
 
 Planilha_CC15 = pd.read_excel("planilhaderotascc15.xlsx")
-colunas_para_remover = ['Série', 'Cnpj cliente', 'N° Carga', 'Status da baixa','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico']
+colunas_para_remover = ['Série', 'Cnpj cliente', 'Status da baixa','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico']
 Planilha_CC15.drop(columns=colunas_para_remover, inplace=True)
 Planilha_CC15['N° NF'] = pd.to_numeric(Planilha_CC15['N° NF'], errors='coerce')
 Planilha_CC15.dropna(subset=['N° NF'], inplace=True)
@@ -539,7 +584,7 @@ combined_df['BAIXADO'] = combined_df['BAIXADO'].fillna('NAO')
 #     pyautogui.press("down")
 # pyautogui.press("enter")
 numero_linhas = len(combined_df)
-click_image('cancelar.png')
+# click_image('cancelar.png')
 
 for i, linha in enumerate(combined_df.index):
     nf = combined_df.loc[linha, "NF"]
@@ -548,6 +593,7 @@ for i, linha in enumerate(combined_df.index):
     data_entrega = combined_df.loc[linha, "Data Entrega"]   
     data_fim_descarregamento =  combined_df.loc[linha, "Fim Descarreg."]  
     baixado = str(combined_df.loc[linha, "BAIXADO"])  
+    referencia = combined_df.loc[linha, "N° Carga"]
     if baixado == "SIM":
         continue
     else:
@@ -571,8 +617,11 @@ for i, linha in enumerate(combined_df.index):
    
         status = 'ENTREGUE'
         falta = numero_linhas - i      
-        print(f'nota:{nf} data nota:{data_nota_fiscal} data chegada:{data_chegada} data entrega:{data_entrega} fim descarregamento:{data_fim_descarregamento} falta:{falta}')
-        
+        print(f'nota:{nf} data nota:{data_nota_fiscal} data chegada:{data_chegada} data entrega:{data_entrega} fim descarregamento:{data_fim_descarregamento} refe:{referencia} falta:{falta}')
+        click_image('referencia.png')
+        for i in range(10):
+            pyautogui.press("backspace")
+        pyautogui.write(str(referencia))
         click_image('digitar_data.png')
         for i in range(10):
             pyautogui.press("backspace")
@@ -584,46 +633,47 @@ for i, linha in enumerate(combined_df.index):
         pyautogui.sleep(time)
         click_image('atualizar.png')
         pyautogui.sleep(time)
+        confirmacao_preenchido('referencia.png','digitar_data.png','digitar_nota.png')
         if imagem_encontrada('nota_encontrada.png'):
             combined_df.loc[linha, "BAIXADO"] = "SIM"        
             click_image('salvar_filial.png')
-            # pyautogui.write("1")
-            # pyautogui.sleep(time)       
-            # click_image('salvar_ocorrencia.png')
-            # pyautogui.write("1")
-            # pyautogui.sleep(time)      
-            # click_image('salvar_observ.png')
-            # pyautogui.write("1")
-            # pyautogui.sleep(time)           
-            # pyautogui.press("tab")
-            # verificar_campo('campo_filial.png')
-            # verificar_campo('campo_observacao.png')
-            # verificar_campo('campo_ocorrencia.png')
-            # click_image('salvar_datachegada.png')
-            # for i in range(10):
-            #     pyautogui.press("backspace")
-            # pyautogui.write(str(data_chegada))
-            # pyautogui.sleep(time)
-            # pyautogui.press('tab')
-            # pyautogui.write(str(data_entrega))
-            # pyautogui.sleep(time)
-            # pyautogui.press('tab')
-            # pyautogui.write(str(data_fim_descarregamento))
-            # pyautogui.sleep(time)
-            # pyautogui.press('tab')
-            # pyautogui.write("aaa")
-            # pyautogui.sleep(time)
-            # for i in range(2):
-            #     pyautogui.press("tab")
-            # pyautogui.write("111")
-            # pyautogui.sleep(time)
-            # click_image('efetuar_baixa.png')
+            pyautogui.write("1")
+            pyautogui.sleep(time)       
+            click_image('salvar_ocorrencia.png')
+            pyautogui.write("1")
+            pyautogui.sleep(time)      
+            click_image('salvar_observ.png')
+            pyautogui.write("1")
+            pyautogui.sleep(time)           
+            pyautogui.press("tab")
+            verificar_campo('campo_filial.png')
+            verificar_campo('campo_observacao.png')
+            verificar_campo('campo_ocorrencia.png')
+            click_image('salvar_datachegada.png')
+            for i in range(10):
+                pyautogui.press("backspace")
+            pyautogui.write(str(data_chegada))
             pyautogui.sleep(time)
-            # finalizar_baixa('digitar_data.png')
-            click_image('cancelar.png')
-        else:
-            combined_df.loc[linha, "BAIXADO"] = "NAO" 
-            click_image('cancelar.png')
+            pyautogui.press('tab')
+            pyautogui.write(str(data_entrega))
+            pyautogui.sleep(time)
+            pyautogui.press('tab')
+            pyautogui.write(str(data_fim_descarregamento))
+            pyautogui.sleep(time)
+            pyautogui.press('tab')
+            pyautogui.write("aaa")
+            pyautogui.sleep(time)
+            for i in range(2):
+                pyautogui.press("tab")
+            pyautogui.write("111")
+            pyautogui.sleep(time)
+            # click_image('efetuar_baixa.png')
+        #     pyautogui.sleep(time)
+        #     # finalizar_baixa('digitar_data.png')
+        #     click_image('cancelar.png')
+        # else:
+        #     combined_df.loc[linha, "BAIXADO"] = "NAO" 
+        #     click_image('cancelar.png')
 
 # combined_df = combined_df[combined_df['BAIXADO'] != 'NAO']
 # combined_df.to_excel('BASE_DADOS.xlsx', index=False)    
