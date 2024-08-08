@@ -92,13 +92,12 @@ def confirmacao_preenchido(image_path,image_path2,image_path3, confidence=0.9):
     image_path3 = os.path.join(current_dir, caminho_imagem, image_path3)  
     while True:
         try:
-            # Tentar localizar qualquer uma das imagens na tela
-            position = (pyautogui.locateOnScreen(image_path, confidence=confidence) or
-                        pyautogui.locateOnScreen(image_path2, confidence=confidence) or
-                        pyautogui.locateOnScreen(image_path3, confidence=confidence))
-            
-            if position:
-                print('Imagem foi encontrada na tela. Executar uma ação.')
+            position = pyautogui.locateOnScreen(image_path, confidence=confidence)
+            position2 = pyautogui.locateOnScreen(image_path2, confidence=confidence)
+            position3 = pyautogui.locateOnScreen(image_path3, confidence=confidence)
+
+            if position or position2 or position3:
+                print('Algum filtro nao foi digitado.')
                 click_image('cancelar.png')
                 click_image('referencia.png')
                 for i in range(10):
@@ -116,10 +115,11 @@ def confirmacao_preenchido(image_path,image_path2,image_path3, confidence=0.9):
                 click_image('atualizar.png')
                 pyautogui.sleep(time)
         except Exception as e:
-            print(f"Ocorreu um erro: {e}")
+            print("Filtros todos digitados.")
             break  # Saia do loop em caso de erro inesperado
 
         pyautogui.sleep(1)
+        
 def baixada_ou_nao(yes, ok, confidence=0.9):
     current_dir = os.path.dirname(__file__)  # Diretório atual do script
     caminho_imagem = caminho + r'\IMAGENS'
@@ -180,6 +180,10 @@ def imagem_encontrada(image_path, confidence=0.9, max_attempts=5):
         pyautogui.sleep(1)  
     
     click_image('cancelar.png')
+    click_image('referencia.png')
+    for i in range(10):
+        pyautogui.press("backspace")
+    pyautogui.write(str(referencia))
     click_image('digitar_data.png')
     for i in range(15):
         pyautogui.press("backspace")
@@ -573,18 +577,18 @@ combined_df['BAIXADO'] = combined_df['BAIXADO'].fillna('NAO')
 # click_image('filial_1.png')
 # pyautogui.press("enter")
 
-# click_image('botao_frota.png')
-# pyautogui.press("alt")
-# pyautogui.press("alt")
-# pyautogui.press("right")
-# for i in range(2): 
-#     pyautogui.press("down")
-# pyautogui.press("right")
-# for i in range(10): 
-#     pyautogui.press("down")
-# pyautogui.press("enter")
+click_image('botao_frota.png')
+pyautogui.press("alt")
+pyautogui.press("alt")
+pyautogui.press("right")
+for i in range(2): 
+    pyautogui.press("down")
+pyautogui.press("right")
+for i in range(10): 
+    pyautogui.press("down")
+pyautogui.press("enter")
 numero_linhas = len(combined_df)
-# click_image('cancelar.png')
+click_image('cancelar.png')
 
 for i, linha in enumerate(combined_df.index):
     nf = combined_df.loc[linha, "NF"]
@@ -618,6 +622,7 @@ for i, linha in enumerate(combined_df.index):
         status = 'ENTREGUE'
         falta = numero_linhas - i      
         print(f'nota:{nf} data nota:{data_nota_fiscal} data chegada:{data_chegada} data entrega:{data_entrega} fim descarregamento:{data_fim_descarregamento} refe:{referencia} falta:{falta}')
+        click_image('cancelar.png')
         click_image('referencia.png')
         for i in range(10):
             pyautogui.press("backspace")
@@ -633,6 +638,7 @@ for i, linha in enumerate(combined_df.index):
         pyautogui.sleep(time)
         click_image('atualizar.png')
         pyautogui.sleep(time)
+        pyautogui.sleep(10)
         confirmacao_preenchido('referencia.png','digitar_data.png','digitar_nota.png')
         if imagem_encontrada('nota_encontrada.png'):
             combined_df.loc[linha, "BAIXADO"] = "SIM"        
