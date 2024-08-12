@@ -489,10 +489,10 @@ arquivos = [
     'planilhaderotascc19.xlsx'
 ]
 
-# diretorio_origem = r'C:/Users/Usuario/Downloads/'
-# diretorio_destino = r'C:\Users\Usuario\Desktop\Robo-Baixa-Entregas'
-diretorio_origem = r'C:/Users/Andrew/Downloads/'
-diretorio_destino = r'C:/Users/Andrew/Desktop/Robo-Baixa-Entregas'
+diretorio_origem = r'C:/Users/Usuario/Downloads/'
+diretorio_destino = r'C:\Users\Usuario\Desktop\Robo-Baixa-Entregas'
+# diretorio_origem = r'C:/Users/Andrew/Downloads/'
+# diretorio_destino = r'C:/Users/Andrew/Desktop/Robo-Baixa-Entregas'
 
 if not os.path.exists(diretorio_destino):
     os.makedirs(diretorio_destino)
@@ -581,8 +581,8 @@ if check_caps_lock():
 pyautogui.keyDown('win')
 pyautogui.press("m")
 pyautogui.keyUp('win')
-#click_image('logo_rodopar_areatrabalho.png')#PC ESCRITORIO
-click_image('logo_rodopar_areatrabalho_resumido.png')#PC ESCRITORIO
+click_image('logo_rodopar_areatrabalho.png')#PC ESCRITORIO
+#click_image('logo_rodopar_areatrabalho_resumido.png')#PC ESCRITORIO
 #click_image('logo_rodopar_areatrabalho.png')#PC CASA
 pyautogui.click()
 click_image('conectar_rodopar.png')
@@ -593,12 +593,12 @@ pyautogui.write("18@mudar")
 click_image('ok_primeiro_login.png')
 #click_image('ok_primeiro_login2.png')
 click_image('sim_primeiro_login.png')
-#click_image('sim_primeiro_login2.png')
+#   click_image('sim_primeiro_login2.png')
 click_image('segundo_login.png')    
 pyautogui.sleep(1)
 pyautogui.write("anascimento")
 pyautogui.press("tab")
-pyautogui.write("99060767")
+pyautogui.write("990607")
 for i in range(2): 
     pyautogui.press("enter")
 click_image('filial_1.png')
