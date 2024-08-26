@@ -21,70 +21,22 @@ time = 0.5
 caminho = os.getcwd() 
 caminho_sistema = caminho.replace("C", "T", 1)
 
-def imagem_encontrada(image_path, confidence=0.9, max_attempts=5):
-    current_dir = os.path.dirname(__file__)  # Diretório atual do script
-    caminho_imagem = os.path.join(current_dir, 'IMAGENS')
-    image_path = os.path.join(caminho_imagem, image_path)
-    for attempt in range(max_attempts):
-        try:
-            position = pyautogui.locateOnScreen(image_path, confidence=confidence)
-            if position:
-                print("Nota encontrada na tela.")
-                return True
-        except Exception as e:
-            print("Nota não encontrada na tela. Aguardando...")
-        pyautogui.sleep(1)
 
-    click_image('CTRC.png')
-    for i in range(2):
-        pyautogui.press("down")
-    pyautogui.sleep(0.5)
-    pyautogui.press("enter")   
-    for attempt in range(max_attempts):
-        try:
-            position = pyautogui.locateOnScreen(image_path, confidence=confidence)
-            if position:
-                print("Nota encontrada na tela é uma OST.")
-                return True
-        except Exception as e:
-            print("Nota não encontrada na tela. Aguardando...")
-        pyautogui.sleep(1) 
-         
-    multi = True
-    click_image('cancelar.png')
-    click_image('referencia.png')
-    for i in range(10):
-        pyautogui.press("backspace")
-    pyautogui.write(str(referencia))
-    click_image('digitar_data.png')
-    for i in range(15):
-        pyautogui.press("backspace")
-    pyautogui.write(str(data_nota_fiscal))
-    pyautogui.sleep(1)  
-    click_nota('digitar_nota.png')
-    pyautogui.sleep(1)
-    pyautogui.write('00')
-    pyautogui.sleep(0.2)
-    pyautogui.write(str(nf))
-    pyautogui.sleep(1)
-    confirmacao_preenchido('referencia.png','digitar_data.png','digitar_nota.png')
-    for i in range(15):
-        pyautogui.press("left")
-    pyautogui.sleep(1)
-    click_image('atualizar.png')
-    pyautogui.sleep(1)
-    for attempt in range(max_attempts):
-        try:
-            position = pyautogui.locateOnScreen(image_path, confidence=confidence)
-            if position:
-                print("Nota encontrada na tela.")
-                confirmacao_preenchido('referencia.png','digitar_data.png','digitar_nota.png')
-                return True
-        except Exception as e:
-            print("Nota não encontrada na tela. Aguardando...")
-        pyautogui.sleep(1)
-    print("Número máximo de tentativas atingido. Nota não encontrada.")
-    return False
-
-if imagem_encontrada('nota_encontrada.png'):
-    combined_df.loc[linha, "BAIXADO"] = "SIM" 
+Planilha_CC19 = pd.read_excel("planilhaderotascc19.xlsx")
+colunas_para_remover = ['Série', 'Cnpj cliente', 'Status da baixa','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico','NF com problema','Imagem Salva - Com Erro']
+Planilha_CC19.drop(columns=colunas_para_remover, inplace=True)
+Planilha_CC19['N° NF'] = pd.to_numeric(Planilha_CC19['N° NF'], errors='coerce')
+Planilha_CC19.dropna(subset=['N° NF'], inplace=True)
+Planilha_CC19['N° NF'] = Planilha_CC19['N° NF'].astype(int)
+Planilha_CC19 = Planilha_CC19.rename(columns={'N° NF': 'NF', 'Data NF': 'DATA NOTA FISCAL', 'Data': 'Data Chegada', 'Status da entrega': 'STATUS'})
+Planilha_CC19['Data Entrega'] = Planilha_CC19['Data Chegada']
+Planilha_CC19['Fim Descarreg.'] = Planilha_CC19['Data Chegada']
+Planilha_CC19['DATA NOTA FISCAL'] = pd.to_datetime(Planilha_CC19['DATA NOTA FISCAL'])
+Planilha_CC19['DATA NOTA FISCAL'] = Planilha_CC19['DATA NOTA FISCAL'].dt.strftime('%d/%m/%Y')
+colunas_de_data = ['Data Entrega', 'Fim Descarreg.']
+for coluna in colunas_de_data:
+    processar_coluna_data(Planilha_CC19, coluna)
+processar_datas(Planilha_CC19, colunas_de_data)
+processar_coluna_chegada(Planilha_CC19,'Data Chegada')
+Planilha_CC19 = Planilha_CC19.dropna(axis=1, how='all')
+#print(Planilha_CC19['Data Chegada'])

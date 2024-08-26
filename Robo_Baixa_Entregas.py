@@ -451,9 +451,13 @@ def login():
     pyautogui.click()
     click_image('conectar_rodopar.png')
     #click_image('conectar_rodopar1.png')
+
+    #colocar o trocar de conta aqui
+    #DATAPARDC\jet.anascimento
+    
     click_image('senha_rodopar_1.png')
     #click_image('senha_rodopar_2.png')
-    pyautogui.write("18@mudar")
+    pyautogui.write("17mudar2")
     click_image('ok_primeiro_login.png')
     #click_image('ok_primeiro_login2.png')
     click_image('sim_primeiro_login.png')
@@ -645,26 +649,25 @@ for i, linha in enumerate(combined_df.index):
     # Obtém a hora atual
     hora_atual = datetime.now().time()
 
-    # Verifica se é 22:55 
-    if hora_atual.strftime("%H:%M") == "22:55":
-        print("Já são 22:55 esperar 15 minutos")
-        click_image('botao_voltar.png')
-        pyautogui.sleep(2)
-        alt_press("f4")
-        click_image('fechar_rodopar.png')
-        pyautogui.sleep(20)
-        pyautogui.keyDown('win')
-        pyautogui.press("m")
-        pyautogui.keyUp('win')
-        click_image('pasta_josi.png')
-        pyautogui.sleep(900)
-        login()
-    else:
-        print("Ainda não são 22:55.")
-
     if baixado == "SIM":
         continue
     else:
+            # Verifica se é 22:55 
+        if hora_atual.strftime("%H:%M") == "22:55":
+            print("Já são 22:55 esperar 15 minutos")
+            click_image('botao_voltar.png')
+            pyautogui.sleep(2)
+            alt_press("f4")
+            click_image('fechar_rodopar.png')
+            pyautogui.sleep(20)
+            pyautogui.keyDown('win')
+            pyautogui.press("m")
+            pyautogui.keyUp('win')
+            click_image('pasta_josi.png')
+            pyautogui.sleep(900)
+            login()
+        else:
+            print("Ainda não são 22:55.")
         data_chegada_str_sem_hora = remover_hora(data_chegada)
         try:
             data_datetime = datetime.strptime(data_nota_fiscal, '%d/%m/%Y')
