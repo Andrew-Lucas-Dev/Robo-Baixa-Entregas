@@ -573,6 +573,7 @@ for coluna in colunas_de_data:
 processar_datas(Planilha_CC19, colunas_de_data)
 processar_coluna_chegada(Planilha_CC19,'Data Chegada')
 Planilha_CC19 = Planilha_CC19.dropna(axis=1, how='all')
+Planilha_CC19 = Planilha_CC19[Planilha_CC19['STATUS'] == 'Entregue']
 #print(Planilha_CC19['Data Chegada'])
 
 Planilha_CC15 = pd.read_excel("planilhaderotascc15.xlsx")
@@ -593,6 +594,7 @@ for coluna in colunas_de_data:
 processar_datas(Planilha_CC15, colunas_de_data)
 processar_coluna_chegada(Planilha_CC15,'Data Chegada')
 Planilha_CC15 = Planilha_CC15.dropna(axis=1, how='all')
+Planilha_CC15 = Planilha_CC15[Planilha_CC15['STATUS'] == 'Entregue']
 #print(Planilha_CC15['Data Chegada'])
 
 Planilha_Bahia = pd.read_excel("EntregaT2.xlsx")    
