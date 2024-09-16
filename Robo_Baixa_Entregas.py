@@ -60,6 +60,7 @@ def finalizar_baixa(image_path, confidence=0.9):
             click_('yes_marcado.png')
             click_('ok.png')
             click_('cancelar.png')
+            click_('yes2.png')
             print("Imagem não encontrada na tela. Aguardando...")
         pyautogui.sleep(0.5)
 
@@ -178,7 +179,7 @@ def baixada_ou_nao(yes, ok, confidence=0.9):
         pyautogui.sleep(1)
     return False
 
-def imagem_encontrada(image_path, confidence=0.9, max_attempts=5):
+def imagem_encontrada(image_path, confidence=0.9, max_attempts=7):
     current_dir = os.path.dirname(__file__)  # Diretório atual do script
     caminho_imagem = os.path.join(current_dir, 'IMAGENS')
     image_path = os.path.join(caminho_imagem, image_path)
@@ -451,13 +452,10 @@ def login():
     pyautogui.click()
     click_image('conectar_rodopar.png')
     #click_image('conectar_rodopar1.png')
-
-    #colocar o trocar de conta aqui
-    #DATAPARDC\jet.anascimento
     
     click_image('senha_rodopar_1.png')
     #click_image('senha_rodopar_2.png')
-    pyautogui.write("17mudar2")
+    pyautogui.write("19@mudar")
     click_image('ok_primeiro_login.png')
     #click_image('ok_primeiro_login2.png')
     click_image('sim_primeiro_login.png')
@@ -476,12 +474,12 @@ def login():
     click_image('botao_faturamento_movimentacao_entregas.png')
     click_image('cancelar.png')
 
-
 driver = webdriver.Chrome()
 driver.get("https://jettatransporte-my.sharepoint.com/:f:/g/personal/jetta_bi_jettatransporte_onmicrosoft_com/EiA6eCcrmHVOi0SVjgVS4eYBTgW6NmdHNlvRSINLlAOW5g?e=qyl9wK")
-driver.maximize_window()
+driver.maximize_window()        
 
-click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div[1]/span/span/button')
+click_selenium(By.XPATH,
+ '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[2]/div/div/div[3]/div/div[1]/span/span/button')
 pyautogui.sleep(5)
 # click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div[1]/span/span/button')
 # pyautogui.sleep(5)                       
@@ -558,7 +556,7 @@ pyautogui.sleep(5)
 
 Planilha_CC19 = pd.read_excel("planilhaderotascc19.xlsx")
 colunas_para_remover = ['Série', 'Cnpj cliente', 'Status da baixa','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico','NF com problema','Imagem Salva - Com Erro']
-Planilha_CC19.drop(columns=colunas_para_remover, inplace=True)
+Planilha_CC19.drop(columns=colunas_para_remover, inplace=True)      
 Planilha_CC19['N° NF'] = pd.to_numeric(Planilha_CC19['N° NF'], errors='coerce')
 Planilha_CC19.dropna(subset=['N° NF'], inplace=True)
 Planilha_CC19['N° NF'] = Planilha_CC19['N° NF'].astype(int)
