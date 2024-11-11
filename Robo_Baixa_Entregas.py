@@ -61,6 +61,10 @@ def finalizar_baixa(image_path, confidence=0.9):
             click_('ok.png')
             click_('cancelar.png')
             click_('yes2.png')
+            click_('sim_marcado.png')
+            click_('sim_confirmar_entrega.png')
+
+            
             print("Imagem não encontrada na tela. Aguardando...")
         pyautogui.sleep(0.5)
 
@@ -452,19 +456,18 @@ def login():
     pyautogui.click()
     click_image('conectar_rodopar.png')
     #click_image('conectar_rodopar1.png')
-    
     click_image('senha_rodopar_1.png')
     #click_image('senha_rodopar_2.png')
-    pyautogui.write("19@mudar")
+    pyautogui.write("mudar123")
     click_image('ok_primeiro_login.png')
     #click_image('ok_primeiro_login2.png')
     click_image('sim_primeiro_login.png')
     #   click_image('sim_primeiro_login2.png')
     click_image('segundo_login.png')    
     pyautogui.sleep(1)
-    pyautogui.write("anascimento")
-    pyautogui.press("tab")
-    pyautogui.write("990607")
+    pyautogui.write("llima")
+    pyautogui.press("tab")  
+    pyautogui.write("001")
     for i in range(2): 
         pyautogui.press("enter")
     click_image('filial_1.png')
@@ -478,50 +481,55 @@ driver = webdriver.Chrome()
 driver.get("https://jettatransporte-my.sharepoint.com/:f:/g/personal/jetta_bi_jettatransporte_onmicrosoft_com/EiA6eCcrmHVOi0SVjgVS4eYBTgW6NmdHNlvRSINLlAOW5g?e=qyl9wK")
 driver.maximize_window()        
 
-click_selenium(By.XPATH,
- '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[2]/div/div/div[3]/div/div[1]/span/span/button')
-pyautogui.sleep(5)
-# click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div[1]/span/span/button')
-# pyautogui.sleep(5)                       
-# try:
-#     print("Pasta Planilha Bahia...")
-#     corpo_email = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div/div/div/div[3]/div/div[1]/span/span/button')))
-#     action_chains = ActionChains(driver)                                                
-#     action_chains.context_click(corpo_email).perform()
-# except Exception as e:
-#     print("Erro ao clicar no corpo do e-mail:", e)
-# click_selenium(By.XPATH, '/html/body/div[4]/div/div/div/div/div/div/ul/li[4]/button/div/span')
-# pyautogui.sleep(2)
-# driver.back()
-# pyautogui.sleep(2)
 
-click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[2]/div/div/div[3]/div/div[1]/span/span/button')
-pyautogui.sleep(5)
+#click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div[1]/span/span/button')
+click_selenium(By.CSS_SELECTOR, "button[title='Robo-Baixa-Entregas']")
+pyautogui.sleep(2)
+
+click_selenium(By.CSS_SELECTOR, "button[title='Planilha Bahia']")
+                      
 try:
-    print("Pasta Planilha CC19...")
-    corpo_email = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div/div/div/div[3]/div/div[1]/span/span/button')))
-    action_chains = ActionChains(driver)
+    print("Pasta Planilha Bahia...")
+    corpo_email = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[title='EntregaT2.xlsx']")))
+    action_chains = ActionChains(driver)                                                
     action_chains.context_click(corpo_email).perform()
 except Exception as e:
     print("Erro ao clicar no corpo do e-mail:", e)
 pyautogui.sleep(5)
-click_selenium(By.XPATH, '/html/body/div[4]/div/div/div/div/div/div/ul/li[4]/button/div/span')
+click_selenium(By.XPATH, "//span[text()='Baixar']")
 pyautogui.sleep(2)
 driver.back()
 pyautogui.sleep(2)
 
-click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[3]/div/div/div[3]/div/div[1]/span/span/button')
+#click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[2]/div/div/div[3]/div/div[1]/span/span/button')
+click_selenium(By.CSS_SELECTOR, "button[title='Planilha CC15']")
 pyautogui.sleep(5)
 try:
     print("Pasta Planilha CC15...")
-    corpo_email = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div/div/div/div[3]/div/div[1]/span/span/button')))
+    corpo_email = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[title='planilhaderotascc15.xlsx']")))
     action_chains = ActionChains(driver)
     action_chains.context_click(corpo_email).perform()
 except Exception as e:
     print("Erro ao clicar no corpo do e-mail:", e)
 
 pyautogui.sleep(5)
-click_selenium(By.XPATH, '/html/body/div[4]/div/div/div/div/div/div/ul/li[4]/button/div/span')
+click_selenium(By.XPATH, "//span[text()='Baixar']")
+pyautogui.sleep(2)
+driver.back()
+pyautogui.sleep(2)
+
+click_selenium(By.CSS_SELECTOR, "button[title='Planilha CC19']")
+pyautogui.sleep(5)
+try:
+    print("Pasta Planilha CC19...")
+    corpo_email = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[title='planilhaderotascc19.xlsx']")))
+    action_chains = ActionChains(driver)
+    action_chains.context_click(corpo_email).perform()
+except Exception as e:
+    print("Erro ao clicar no corpo do e-mail:", e)
+
+pyautogui.sleep(5)
+click_selenium(By.XPATH, "//span[text()='Baixar']")
 pyautogui.sleep(5)
 driver.quit()
 
@@ -554,8 +562,9 @@ for arquivo in arquivos:
 driver.quit()
 pyautogui.sleep(5)
 
+#, 'Status da baixa','NF com problema','Imagem Salva - Com Erro'
 Planilha_CC19 = pd.read_excel("planilhaderotascc19.xlsx")
-colunas_para_remover = ['Série', 'Cnpj cliente', 'Status da baixa','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico','NF com problema','Imagem Salva - Com Erro']
+colunas_para_remover = ['Série', 'Cnpj cliente','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico']
 Planilha_CC19.drop(columns=colunas_para_remover, inplace=True)      
 Planilha_CC19['N° NF'] = pd.to_numeric(Planilha_CC19['N° NF'], errors='coerce')
 Planilha_CC19.dropna(subset=['N° NF'], inplace=True)
