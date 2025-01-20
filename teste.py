@@ -483,181 +483,41 @@ def login():
     click_image('botao_faturamento_movimentacao_entregas.png')
     click_image('cancelar.png')
 
-# driver = webdriver.Chrome()
-# driver.get("https://jettatransporte-my.sharepoint.com/:f:/g/personal/jetta_bi_jettatransporte_onmicrosoft_com/EiA6eCcrmHVOi0SVjgVS4eYBTgW6NmdHNlvRSINLlAOW5g?e=qyl9wK")
-# driver.maximize_window()        
-# pyautogui.sleep(2)
-
-# #click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[3]/div/div[1]/span/span/button')
-# click_selenium(By.XPATH, '//*[@id="virtualized-list_3_page-0_579067"]/div[3]/span')
-# pyautogui.sleep(2)
-
-# click_selenium(By.XPATH, '//*[@id="virtualized-list_4_page-0_579144"]/div[3]/span')
-                      
-# try:
-#     print("Pasta Planilha Bahia...")
-#     corpo_email = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="virtualized-list_5_page-0_579145"]/div[3]/span')))
-#     action_chains = ActionChains(driver)                                                
-#     action_chains.context_click(corpo_email).perform()
-# except Exception as e:
-#     print("Erro ao clicar no corpo do e-mail:", e)
-# pyautogui.sleep(5)
-# click_selenium(By.XPATH, "//span[text()='Baixar']")
-# pyautogui.sleep(2)
-# driver.back()
-# pyautogui.sleep(2)
-
-# #click_selenium(By.XPATH, '//*[@id="appRoot"]/div/div[2]/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[2]/div/div/div[3]/div/div[1]/span/span/button')
-# click_selenium(By.XPATH, '//*[@id="virtualized-list_6_page-0_579142"]/div[3]/span')
-# pyautogui.sleep(5)
-# try:
-#     print("Pasta Planilha CC15...")
-#     corpo_email = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="virtualized-list_7_page-0_579146"]/div[3]/span')))
-#     action_chains = ActionChains(driver)
-#     action_chains.context_click(corpo_email).perform()
-# except Exception as e:
-#     print("Erro ao clicar no corpo do e-mail:", e)
-
-# pyautogui.sleep(5)
-# click_selenium(By.XPATH, "//span[text()='Baixar']")
-# pyautogui.sleep(2)
-# driver.back()
-# pyautogui.sleep(2)
-
-# click_selenium(By.XPATH, '//*[@id="virtualized-list_8_page-0_579143"]/div[3]/span')
-# pyautogui.sleep(5)
-# try:
-#     print("Pasta Planilha CC19...")
-#     corpo_email = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="virtualized-list_9_page-0_579147"]/div[3]/span')))
-#     action_chains = ActionChains(driver)
-#     action_chains.context_click(corpo_email).perform()
-# except Exception as e:
-#     print("Erro ao clicar no corpo do e-mail:", e)
-
-# pyautogui.sleep(5)
-# click_selenium(By.XPATH, "//span[text()='Baixar']")
-# pyautogui.sleep(5)
-# driver.quit()
-
-# arquivos = [
-#     'EntregaT2.xlsx',
-#     'planilhaderotascc15.xlsx',
-#     'planilhaderotascc19.xlsx'
-# ]
-
-# diretorio_origem = r'C:/Users/Usuario/Downloads/'
-# diretorio_destino = r'C:\Users\Usuario\Desktop\Robo-Baixa-Entregas'
-# # diretorio_origem = r'C:/Users/Andrew/Downloads/'
-# # diretorio_destino = r'C:/Users/Andrew/Desktop/Robo-Baixa-Entregas'
-
-# if not os.path.exists(diretorio_destino):
-#     os.makedirs(diretorio_destino)
-
-# for arquivo in arquivos:
-#     caminho_origem = os.path.join(diretorio_origem, arquivo)      
-#     caminho_destino = os.path.join(diretorio_destino, arquivo)
-#     try:
-#         if os.path.exists(caminho_origem):
-#             shutil.move(caminho_origem, caminho_destino)
-#             print(f"Arquivo '{arquivo}' movido com sucesso para '{diretorio_destino}'")
-#         else:
-#             print(f"O arquivo de origem '{caminho_origem}' não existe.")
-#     except Exception as e:
-#         print(f"Erro ao mover o arquivo '{arquivo}': {e}")
-
-# driver.quit()
-# pyautogui.sleep(5)
 
 #, 'Status da baixa','NF com problema','Imagem Salva - Com Erro'
-Planilha_CC16 = pd.read_excel("Pasta1.xlsx")
+Planilha_CC21 = pd.read_excel("Pasta2.xlsx")
 #colunas_para_remover = ['Série', 'Cnpj cliente','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico']
-colunas_para_remover = ['Série', 'Cnpj cliente','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico','Status da baixa pelo app','Bairro','Manifesto','EM BRANCO']
-Planilha_CC16.drop(columns=colunas_para_remover, inplace=True)      
-Planilha_CC16['N° NF'] = pd.to_numeric(Planilha_CC16['N° NF'], errors='coerce')
-Planilha_CC16.dropna(subset=['N° NF'], inplace=True)
-Planilha_CC16['N° NF'] = Planilha_CC16['N° NF'].astype(int)
-Planilha_CC16 = Planilha_CC16.rename(columns={'N° NF': 'NF', 'Data NF': 'DATA NOTA FISCAL', 'DATA': 'Data Chegada', 'Status da entrega': 'STATUS', 'Plano': 'N° Carga'})
-Planilha_CC16['Data Entrega'] = Planilha_CC16['Data Chegada']
-Planilha_CC16['Fim Descarreg.'] = Planilha_CC16['Data Chegada']
-Planilha_CC16['DATA NOTA FISCAL'] = pd.to_datetime(Planilha_CC16['DATA NOTA FISCAL'])
-Planilha_CC16['DATA NOTA FISCAL'] = Planilha_CC16['DATA NOTA FISCAL'].dt.strftime('%d/%m/%Y')
+colunas_para_remover = ['Série', 'Cnpj cliente','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico','Manifesto']
+Planilha_CC21.drop(columns=colunas_para_remover, inplace=True)      
+Planilha_CC21['N° NF'] = pd.to_numeric(Planilha_CC21['N° NF'], errors='coerce')
+Planilha_CC21.dropna(subset=['N° NF'], inplace=True)
+Planilha_CC21['N° NF'] = Planilha_CC21['N° NF'].astype(int)
+Planilha_CC21 = Planilha_CC21.rename(columns={'N° NF': 'NF', 'Data NF': 'DATA NOTA FISCAL', 'Data': 'Data Chegada', 'Status da entrega': 'STATUS', 'Plano': 'N° Carga'})
+Planilha_CC21['Data Entrega'] = Planilha_CC21['Data Chegada']
+Planilha_CC21['Fim Descarreg.'] = Planilha_CC21['Data Chegada']
+Planilha_CC21['DATA NOTA FISCAL'] = pd.to_datetime(Planilha_CC21['DATA NOTA FISCAL'])
+Planilha_CC21['DATA NOTA FISCAL'] = Planilha_CC21['DATA NOTA FISCAL'].dt.strftime('%d/%m/%Y')
 colunas_de_data = ['Data Entrega', 'Fim Descarreg.']
 for coluna in colunas_de_data:
-    processar_coluna_data(Planilha_CC16, coluna)
-processar_datas(Planilha_CC16, colunas_de_data)
-processar_coluna_chegada(Planilha_CC16,'Data Chegada')
-Planilha_CC16 = Planilha_CC16.dropna(axis=1, how='all')
-Planilha_CC16 = Planilha_CC16[(Planilha_CC16['STATUS'] == 'Finalizado') | (Planilha_CC16['STATUS'] == 'FINALIZADO')]
-Planilha_CC16['STATUS'] = 'Entregue'                      
-#print(Planilha_CC16)
-
-#, 'Status da baixa','NF com problema','Imagem Salva - Com Erro'
-Planilha_CC19 = pd.read_excel("planilhaderotascc19.xlsx")
-colunas_para_remover = ['Série', 'Cnpj cliente','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico']
-Planilha_CC19.drop(columns=colunas_para_remover, inplace=True)      
-Planilha_CC19['N° NF'] = pd.to_numeric(Planilha_CC19['N° NF'], errors='coerce')
-Planilha_CC19.dropna(subset=['N° NF'], inplace=True)
-Planilha_CC19['N° NF'] = Planilha_CC19['N° NF'].astype(int)
-Planilha_CC19 = Planilha_CC19.rename(columns={'N° NF': 'NF', 'Data NF': 'DATA NOTA FISCAL', 'Data': 'Data Chegada', 'Status da entrega': 'STATUS'})
-Planilha_CC19['Data Entrega'] = Planilha_CC19['Data Chegada']
-Planilha_CC19['Fim Descarreg.'] = Planilha_CC19['Data Chegada']
-Planilha_CC19['DATA NOTA FISCAL'] = pd.to_datetime(Planilha_CC19['DATA NOTA FISCAL'])
-Planilha_CC19['DATA NOTA FISCAL'] = Planilha_CC19['DATA NOTA FISCAL'].dt.strftime('%d/%m/%Y')
-colunas_de_data = ['Data Entrega', 'Fim Descarreg.']
-for coluna in colunas_de_data:
-    processar_coluna_data(Planilha_CC19, coluna)
-processar_datas(Planilha_CC19, colunas_de_data)
-processar_coluna_chegada(Planilha_CC19,'Data Chegada')
-Planilha_CC19 = Planilha_CC19.dropna(axis=1, how='all')
-Planilha_CC19 = Planilha_CC19[Planilha_CC19['STATUS'] == 'Entregue']
-#print(Planilha_CC19['Data Chegada'])
-
-Planilha_CC15 = pd.read_excel("planilhaderotascc15.xlsx")
-colunas_para_remover = ['Série', 'Cnpj cliente', 'Status da baixa','Cliente','Cidade','Ct-e/OST','Peso','Qtde','Vlr Merc.','Entrega Canhoto Físico']
-Planilha_CC15.drop(columns=colunas_para_remover, inplace=True)
-Planilha_CC15['N° NF'] = pd.to_numeric(Planilha_CC15['N° NF'], errors='coerce')
-Planilha_CC15.dropna(subset=['N° NF'], inplace=True)
-Planilha_CC15['N° NF'] = Planilha_CC15['N° NF'].astype(int)
-Planilha_CC15 = Planilha_CC15.rename(columns={'N° NF': 'NF', 'Data NF': 'DATA NOTA FISCAL', 'Data': 'Data Chegada', 'Status da entrega': 'STATUS'})
-Planilha_CC15['Data Entrega'] = Planilha_CC15['Data Chegada']
-Planilha_CC15['Fim Descarreg.'] = Planilha_CC15['Data Chegada']
-Planilha_CC15['STATUS'] = Planilha_CC15['STATUS'].fillna('EM ROTA')
-Planilha_CC15['DATA NOTA FISCAL'] = pd.to_datetime(Planilha_CC15['DATA NOTA FISCAL'])
-Planilha_CC15['DATA NOTA FISCAL'] = Planilha_CC15['DATA NOTA FISCAL'].dt.strftime('%d/%m/%Y')
-colunas_de_data = ['Data Entrega', 'Fim Descarreg.']
-for coluna in colunas_de_data:
-    processar_coluna_data(Planilha_CC15, coluna) 
-processar_datas(Planilha_CC15, colunas_de_data)
-processar_coluna_chegada(Planilha_CC15,'Data Chegada')
-Planilha_CC15 = Planilha_CC15.dropna(axis=1, how='all')
-Planilha_CC15 = Planilha_CC15[Planilha_CC15['STATUS'] == 'Entregue']
-#print(Planilha_CC15['Data Chegada'])
-
-Planilha_Bahia = pd.read_excel("EntregaT2.xlsx")    
-Planilha_Bahia = Planilha_Bahia[['NF', 'STATUS', 'DT NF', 'CHEGADA', 'FIM DESCARGA', 'ENTREGA']]
-Planilha_Bahia = Planilha_Bahia[(Planilha_Bahia['STATUS'] == 'ATRASADA') | (Planilha_Bahia['STATUS'] == 'NO PRAZO')]
-Planilha_Bahia = Planilha_Bahia.rename(columns={'DT NF': 'DATA NOTA FISCAL','CHEGADA': 'Data Chegada', 'ENTREGA': 'Data Entrega', 'FIM DESCARGA': 'Fim Descarreg.'})
-Planilha_Bahia['NF'] = Planilha_Bahia['NF'].astype(np.int64)#problema do .0
-Planilha_Bahia['STATUS'] = 'Entregue'
-Planilha_Bahia['DATA NOTA FISCAL'] = pd.to_datetime(Planilha_Bahia['DATA NOTA FISCAL'])
-Planilha_Bahia['DATA NOTA FISCAL'] = Planilha_Bahia['DATA NOTA FISCAL'].dt.strftime('%d/%m/%Y')
-colunas_para_formatar = ['Data Chegada', 'Data Entrega', 'Fim Descarreg.']
-formatar_datas(Planilha_Bahia, colunas_para_formatar)
-Planilha_Bahia = Planilha_Bahia.dropna(axis=1, how='all')
-# #print(Planilha_Bahia)
+    processar_coluna_data(Planilha_CC21, coluna)
+processar_datas(Planilha_CC21, colunas_de_data)
+processar_coluna_chegada(Planilha_CC21,'Data Chegada')
+Planilha_CC21 = Planilha_CC21.dropna(axis=1, how='all')
+Planilha_CC21 = Planilha_CC21[(Planilha_CC21['STATUS'] == 'Entregue')]                 
+# print(Planilha_CC21)
 
 BASE_DADOS = pd.read_excel("BASE_DADOS.xlsx")
 BASE_DADOS = BASE_DADOS.dropna(axis=1, how='all')
 #print(BASE_DADOS)
 
 # # # # Juntar as 4 planilhas
-combined_df = pd.concat([BASE_DADOS,Planilha_CC19, Planilha_CC15,Planilha_Bahia,Planilha_CC16], ignore_index=True)
+combined_df = pd.concat([BASE_DADOS,Planilha_CC21], ignore_index=True)
 combined_df = combined_df[combined_df['STATUS'] == 'Entregue']
 combined_df = combined_df.drop_duplicates(subset='NF', keep='first')
 combined_df['BAIXADO'] = combined_df['BAIXADO'].fillna('NAO')
 #print(combined_df)
 
-# login()
+login()
 data_nota_fiscal1 = None  # Inicializando fora do loop
 referencia1 = None  # Inicializando fora do loop
 numero_linhas = len(combined_df)
@@ -691,21 +551,21 @@ for i, linha in enumerate(combined_df.index):
         continue
     else:
             # Verifica se é 22:55 
-        # if hora_atual.strftime("%H:%M") == "22:55":
-        #     print("Já são 22:55 esperar 15 minutos")
-        #     click_image('botao_voltar.png')
-        #     pyautogui.sleep(2)
-        #     alt_press("f4")
-        #     click_image('fechar_rodopar.png')
-        #     pyautogui.sleep(20)
-        #     pyautogui.keyDown('win')
-        #     pyautogui.press("m")
-        #     pyautogui.keyUp('win')
-        #     click_image('pasta_josi.png')
-        #     pyautogui.sleep(900)
-        #     login()
-        # else:
-        #     print("Ainda não são 22:55.")
+        if hora_atual.strftime("%H:%M") == "22:55":
+            print("Já são 22:55 esperar 15 minutos")
+            click_image('botao_voltar.png')
+            pyautogui.sleep(2)
+            alt_press("f4")
+            click_image('fechar_rodopar.png')
+            pyautogui.sleep(20)
+            pyautogui.keyDown('win')
+            pyautogui.press("m")
+            pyautogui.keyUp('win')
+            click_image('pasta_josi.png')
+            pyautogui.sleep(900)
+            login()
+        else:
+            print("Ainda não são 22:55.")
         data_chegada_str_sem_hora = remover_hora(data_chegada)
         try:
             data_datetime = datetime.strptime(data_nota_fiscal, '%d/%m/%Y')
@@ -726,81 +586,78 @@ for i, linha in enumerate(combined_df.index):
    
         status = 'ENTREGUE'
         falta = numero_linhas - i      
-        #print(f'nota:{nf} data nota:{data_nota_fiscal} data chegada:{data_chegada} data entrega:{data_entrega} fim descarregamento:{data_fim_descarregamento} refe:{referencia} falta:{falta}')
-        print(referencia)
-#         click_('ok_marcado.png')
-#         click_image('cancelar.png')
-#         click_('ok_marcado.png')
-#         pyautogui.sleep(time)
-#         click_image('cancelar.png')
-#         pyautogui.sleep(time)
-#         click_image('cancelar.png')
-#         pyautogui.sleep(time)
-#         click_image('referencia.png')
-#         for i in range(10):
-#             pyautogui.press("backspace")
-#         pyautogui.write(str(referencia))
-#         click_image('digitar_data.png') 
-#         for i in range(10):
-#             pyautogui.press("backspace")
-#         pyautogui.write(str(data_nota_fiscal))
-#         pyautogui.sleep(time)  
-#         click_nota('digitar_nota.png')
-#         pyautogui.sleep(time)
-#         pyautogui.write(str(nf))
-#         pyautogui.sleep(time)
-#         click_image('atualizar.png')
-#         pyautogui.sleep(time)
-#         for i in range(2):
-#             pyautogui.press('tab')
-#         if imagem_encontrada('nota_encontrada.png'):
-#             confirmacao_preenchido('referencia.png','digitar_data.png','digitar_nota.png')
-#             pyautogui.sleep(1)
-#             combined_df.loc[linha, "BAIXADO"] = "SIM"        
-#             click_image('salvar_filial.png')
-#             pyautogui.write("1")
-#             pyautogui.sleep(time)       
-#             click_image('salvar_ocorrencia.png')
-#             pyautogui.write("1")
-#             pyautogui.sleep(time)      
-#             click_image('salvar_observ.png')
-#             pyautogui.write("1")
-#             pyautogui.sleep(time)           
-#             pyautogui.press("tab")
-#             verificar_campo('campo_filial.png')
-#             verificar_campo('campo_observacao.png')
-#             verificar_campo('campo_ocorrencia.png')
-#             click_image('salvar_datachegada.png')
-#             for i in range(10):
-#                 pyautogui.press("backspace")
-#             pyautogui.write(str(data_chegada))
-#             pyautogui.sleep(time)
-#             pyautogui.press('tab')
-#             pyautogui.write(str(data_entrega))
-#             pyautogui.sleep(time)
-#             pyautogui.press('tab')
-#             pyautogui.write(str(data_fim_descarregamento))
-#             pyautogui.sleep(time)
-#             pyautogui.press('tab')
-#             pyautogui.write("aaa")
-#             pyautogui.sleep(time)
-#             for i in range(2):
-#                 pyautogui.press("tab")
-#             pyautogui.write("111")
-#             pyautogui.sleep(time)
-#             click_image('efetuar_baixa.png')
-#             pyautogui.sleep(time)
-#             finalizar_baixa('digitar_data.png')
-#             click_image('cancelar.png')
-#         else:
-#             combined_df.loc[linha, "BAIXADO"] = "NAO" 
-#             click_image('cancelar.png')
+        print(f'nota:{nf} data nota:{data_nota_fiscal} data chegada:{data_chegada} data entrega:{data_entrega} fim descarregamento:{data_fim_descarregamento} refe:{referencia} falta:{falta}')
+        click_('ok_marcado.png')
+        click_image('cancelar.png')
+        click_('ok_marcado.png')
+        pyautogui.sleep(time)
+        click_image('cancelar.png')
+        pyautogui.sleep(time)
+        click_image('cancelar.png')
+        pyautogui.sleep(time)
+        click_image('referencia.png')
+        for i in range(10):
+            pyautogui.press("backspace")
+        pyautogui.write(str(referencia))
+        click_image('digitar_data.png') 
+        for i in range(10):
+            pyautogui.press("backspace")
+        pyautogui.write(str(data_nota_fiscal))
+        pyautogui.sleep(time)  
+        click_nota('digitar_nota.png')
+        pyautogui.sleep(time)
+        pyautogui.write(str(nf))
+        pyautogui.sleep(time)
+        click_image('atualizar.png')
+        pyautogui.sleep(time)
+        for i in range(2):
+            pyautogui.press('tab')
+        if imagem_encontrada('nota_encontrada.png'):
+            confirmacao_preenchido('referencia.png','digitar_data.png','digitar_nota.png')
+            pyautogui.sleep(1)
+            combined_df.loc[linha, "BAIXADO"] = "SIM"        
+            click_image('salvar_filial.png')
+            pyautogui.write("1")
+            pyautogui.sleep(time)       
+            click_image('salvar_ocorrencia.png')
+            pyautogui.write("1")
+            pyautogui.sleep(time)      
+            click_image('salvar_observ.png')
+            pyautogui.write("1")
+            pyautogui.sleep(time)           
+            pyautogui.press("tab")
+            verificar_campo('campo_filial.png')
+            verificar_campo('campo_observacao.png')
+            verificar_campo('campo_ocorrencia.png')
+            click_image('salvar_datachegada.png')
+            for i in range(10):
+                pyautogui.press("backspace")
+            pyautogui.write(str(data_chegada))
+            pyautogui.sleep(time)
+            pyautogui.press('tab')
+            pyautogui.write(str(data_entrega))
+            pyautogui.sleep(time)
+            pyautogui.press('tab')
+            pyautogui.write(str(data_fim_descarregamento))
+            pyautogui.sleep(time)
+            pyautogui.press('tab')
+            pyautogui.write("aaa")
+            pyautogui.sleep(time)
+            for i in range(2):
+                pyautogui.press("tab")
+            pyautogui.write("111")
+            pyautogui.sleep(time)
+            click_image('efetuar_baixa.png')
+            pyautogui.sleep(time)
+            finalizar_baixa('digitar_data.png')
+            click_image('cancelar.png')
+        else:
+            combined_df.loc[linha, "BAIXADO"] = "NAO" 
+            click_image('cancelar.png')
 
-# combined_df = combined_df[combined_df['BAIXADO'] != 'NAO']
-# combined_df.to_excel('BASE_DADOS.xlsx', index=False)    
-# click_image('botao_voltar.png')
-# pyautogui.sleep(2)
-# alt_press("f4")
-# click_image('fechar_rodopar.png')
-
-
+combined_df = combined_df[combined_df['BAIXADO'] != 'NAO']
+combined_df.to_excel('BASE_DADOS.xlsx', index=False)    
+click_image('botao_voltar.png')
+pyautogui.sleep(2)
+alt_press("f4")
+click_image('fechar_rodopar.png')
