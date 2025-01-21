@@ -1,7 +1,7 @@
 import sqlite3
 
 # Conexão com o banco de dados (será criado se não existir)
-conexao = sqlite3.connect('notas_fiscais.db')
+conexao = sqlite3.connect('banco_dados_entregas.db')
 cursor = conexao.cursor()
 
 # Criar a tabela
