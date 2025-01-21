@@ -317,11 +317,11 @@ colunas_para_remover_cc21 = [
 Planilha_CC19 = processar_planilha("planilhaderotascc19.xlsx", colunas_para_remover_cc19, 'N° Carga', 'N° Carga')
 Planilha_CC15 = processar_planilha("planilhaderotascc15.xlsx", colunas_para_remover_cc15, 'N° Carga', 'N° Carga')
 Planilha_CC16 = processar_planilha("Pasta1.xlsx", colunas_para_remover_cc16, 'Plano', 'Plano')
-# Planilha_CC21 = processar_planilha("Planilha de Baixas CC21.xlsx", colunas_para_remover_cc21, 'N° Carga', 'N° Carga')
+Planilha_CC21 = processar_planilha("Planilha de Baixas CC21.xlsx", colunas_para_remover_cc21, 'N° Carga', 'N° Carga')
 # print(Planilha_CC19)
 
 # # # # Juntar as 4 planilhas
-combined_df = pd.concat([Planilha_CC19,Planilha_CC15,Planilha_CC16], ignore_index=True)
+combined_df = pd.concat([Planilha_CC19,Planilha_CC15,Planilha_CC16,Planilha_CC21], ignore_index=True)
 
 #-----------------------------------------------------------------------------------------
 #           UM A UM
@@ -459,7 +459,7 @@ for (mdfe, filial), grupo in grupos:
                     continue
                 print(f"Filial: {filial} Nota: {nf} man:{manifesto} carga:{carga} data nota:{data_nota} cheg:{data_chegada} entre:{data_entrega} desc:{data_descarregamento} baixado:{baixado1}")
                 baixado = 'SIM'
-                atualizar_status(nf, baixado,manifesto,filial)
+                # atualizar_status(nf, baixado,manifesto,filial)
 
 print('------------------------------------')
 print('Baixando Manifestos')
@@ -481,6 +481,6 @@ for item in manifestos_filtrados:
         baixado = 'SIM'
         man = int(man)
         filial = int(filial)
-        atualizar_status_man(filial, man, baixado)
+        # atualizar_status_man(filial, man, baixado)
 
 print('fim')

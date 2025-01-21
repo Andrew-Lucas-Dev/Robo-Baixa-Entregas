@@ -632,7 +632,7 @@ for (mdfe, filial), grupo in grupos:
                 filial = int(filial)
                 if referencia is None:
                     continue
-                print(f"Filial: {filial} Nota: {nf} man:{manifesto} carga:{referencia} data nota:{data_nota} cheg:{data_chegada} entre:{data_entrega} desc:{data_fim_descarregamento}")
+                print(f"Filial: {filial} Nota: {nf} man:{manifesto} carga:{referencia} data nota:{data_nota} cheg:{data_chegada} entre:{data_entrega} desc:{data_descarregamento}")
                 
                 click_('ok_marcado.png')
                 click_image('cancelar.png')
@@ -649,7 +649,7 @@ for (mdfe, filial), grupo in grupos:
                 click_image('digitar_data.png') 
                 for i in range(10):
                     pyautogui.press("backspace")
-                pyautogui.write(str(data_nota_fiscal))
+                pyautogui.write(str(data_nota))
                 pyautogui.sleep(time)  
                 click_nota('digitar_nota.png')
                 pyautogui.sleep(time)
@@ -661,10 +661,9 @@ for (mdfe, filial), grupo in grupos:
                     pyautogui.press('tab')
                 if imagem_encontrada('nota_encontrada.png'):
                     confirmacao_preenchido('referencia.png','digitar_data.png','digitar_nota.png')
-                    pyautogui.sleep(1)
-                    combined_df.loc[linha, "BAIXADO"] = "SIM"        
+                    pyautogui.sleep(1)     
                     click_image('salvar_filial.png')
-                    pyautogui.write("1")
+                    pyautogui.write(str(filial))
                     pyautogui.sleep(time)       
                     click_image('salvar_ocorrencia.png')
                     pyautogui.write("1")
@@ -673,7 +672,19 @@ for (mdfe, filial), grupo in grupos:
                     pyautogui.write("1")
                     pyautogui.sleep(time)           
                     pyautogui.press("tab")
-                    verificar_campo('campo_filial.png')
+
+                    #COLOCAR IFS DE ACORDO COM O NUMERO DA FILIAL PRA PEGAR A FOTO CORRESPONDENTE. EX: IF FILIAL == 1
+                    if filial == 1:
+                        verificar_campo('campo_filial.png')
+                    elif filial == 2:
+                        verificar_campo('.png')
+                    elif filial == 3:
+                        verificar_campo('.png')
+                    elif filial == 4:
+                        verificar_campo('.png')
+                    elif filial == 5:
+                        verificar_campo('.png')
+
                     verificar_campo('campo_observacao.png')
                     verificar_campo('campo_ocorrencia.png')
                     click_image('salvar_datachegada.png')
@@ -685,7 +696,7 @@ for (mdfe, filial), grupo in grupos:
                     pyautogui.write(str(data_entrega))
                     pyautogui.sleep(time)
                     pyautogui.press('tab')
-                    pyautogui.write(str(data_fim_descarregamento))
+                    pyautogui.write(str(data_descarregamento))
                     pyautogui.sleep(time)
                     pyautogui.press('tab')
                     pyautogui.write("aaa")
@@ -698,13 +709,14 @@ for (mdfe, filial), grupo in grupos:
                     pyautogui.sleep(time)
                     finalizar_baixa('digitar_data.png')
                     click_image('cancelar.png')
+                    baixado = 'SIM'
+                    # atualizar_status(nf, baixado,manifesto,filial)
                 else:
-                    combined_df.loc[linha, "BAIXADO"] = "NAO" 
                     click_image('cancelar.png')
                 
                 
-                baixado = 'SIM'
-                # atualizar_status(nf, baixado,manifesto,filial)
+                
+
 
 
 
