@@ -9,6 +9,7 @@ cursor.execute('''
 CREATE TABLE IF NOT EXISTS notas (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     filial INTEGER NOT NULL,
+    serie INTEGER NOT NULL,
     nota INTEGER NOT NULL,
     data_nota_fiscal TEXT,
     data_chegada TEXT,
