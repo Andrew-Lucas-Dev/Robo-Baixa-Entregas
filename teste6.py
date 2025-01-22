@@ -275,7 +275,7 @@ def confirmacao_preenchido(image_path, image_path2, image_path3, confidence=0.9)
                 pyautogui.press('tab')
             break
 
-def verificar_campo(image_name, confidence=0.9):
+def verificar_campo(filial,image_name, confidence=0.9):
     current_dir = os.path.dirname(__file__)  # Diretório atual do script
     caminho_imagem = os.path.join(current_dir, 'IMAGENS')
     image_path = os.path.join(caminho_imagem, image_name)    
@@ -298,7 +298,7 @@ def verificar_campo(image_name, confidence=0.9):
             click_image('salvar_filial.png')
             for i in range(5):
                 pyautogui.press("backspace")
-            pyautogui.write("1")
+            pyautogui.write(str(filial))
             pyautogui.sleep(1)   
             pyautogui.press("tab")
             for i in range(5):
@@ -634,111 +634,146 @@ for (mdfe, filial), grupo in grupos:
                     continue
                 print(f"Filial: {filial} Nota: {nf} man:{manifesto} carga:{referencia} data nota:{data_nota} cheg:{data_chegada} entre:{data_entrega} desc:{data_descarregamento}")
                 
-                click_('ok_marcado.png')
-                click_image('cancelar.png')
-                click_('ok_marcado.png')
-                pyautogui.sleep(time)
-                click_image('cancelar.png')
-                pyautogui.sleep(time)
-                click_image('cancelar.png')
-                pyautogui.sleep(time)
-                click_image('referencia.png')
-                for i in range(10):
-                    pyautogui.press("backspace")
-                pyautogui.write(str(referencia))
-                click_image('digitar_data.png') 
-                for i in range(10):
-                    pyautogui.press("backspace")
-                pyautogui.write(str(data_nota))
-                pyautogui.sleep(time)  
-                click_nota('digitar_nota.png')
-                pyautogui.sleep(time)
-                pyautogui.write(str(nf))
-                pyautogui.sleep(time)
-                click_image('atualizar.png')
-                pyautogui.sleep(time)
-                for i in range(2):
-                    pyautogui.press('tab')
-                if imagem_encontrada('nota_encontrada.png'):
-                    confirmacao_preenchido('referencia.png','digitar_data.png','digitar_nota.png')
-                    pyautogui.sleep(1)     
-                    click_image('salvar_filial.png')
-                    pyautogui.write(str(filial))
-                    pyautogui.sleep(time)       
-                    click_image('salvar_ocorrencia.png')
-                    pyautogui.write("1")
-                    pyautogui.sleep(time)      
-                    click_image('salvar_observ.png')
-                    pyautogui.write("1")
-                    pyautogui.sleep(time)           
-                    pyautogui.press("tab")
+                # click_('ok_marcado.png')
+                # click_image('cancelar.png')
+                # click_('ok_marcado.png')
+                # pyautogui.sleep(time)
+                # click_image('cancelar.png')
+                # pyautogui.sleep(time)
+                # click_image('cancelar.png')
+                # pyautogui.sleep(time)
+                # click_image('referencia.png')
+                # for i in range(10):
+                #     pyautogui.press("backspace")
+                # pyautogui.write(str(referencia))
+                # click_image('digitar_data.png') 
+                # for i in range(10):
+                #     pyautogui.press("backspace")
+                # pyautogui.write(str(data_nota))
+                # pyautogui.sleep(time)  
+                # click_nota('digitar_nota.png')
+                # pyautogui.sleep(time)
+                # pyautogui.write(str(nf))
+                # pyautogui.sleep(time)
+                # click_image('atualizar.png')
+                # pyautogui.sleep(time)
+                # for i in range(2):
+                #     pyautogui.press('tab')
+                # if imagem_encontrada('nota_encontrada.png'):
+                #     confirmacao_preenchido('referencia.png','digitar_data.png','digitar_nota.png')
+                #     pyautogui.sleep(1)     
+                #     click_image('salvar_filial.png')
+                #     pyautogui.write(str(filial))
+                #     pyautogui.sleep(time)       
+                #     click_image('salvar_ocorrencia.png')
+                #     pyautogui.write("1")
+                #     pyautogui.sleep(time)      
+                #     click_image('salvar_observ.png')
+                #     pyautogui.write("1")
+                #     pyautogui.sleep(time)           
+                #     pyautogui.press("tab")
 
-                    #COLOCAR IFS DE ACORDO COM O NUMERO DA FILIAL PRA PEGAR A FOTO CORRESPONDENTE. EX: IF FILIAL == 1
-                    if filial == 1:
-                        verificar_campo('campo_filial.png')
-                    elif filial == 2:
-                        verificar_campo('.png')
-                    elif filial == 3:
-                        verificar_campo('.png')
-                    elif filial == 4:
-                        verificar_campo('.png')
-                    elif filial == 5:
-                        verificar_campo('.png')
+                #     #COLOCAR IFS DE ACORDO COM O NUMERO DA FILIAL PRA PEGAR A FOTO CORRESPONDENTE. EX: IF FILIAL == 1
+                #     if filial == 1:
+                #         verificar_campo(filial,'campo_filial.png')
+                #     elif filial == 2:
+                #         verificar_campo(filial,'campo_filial_2.png')
+                #     elif filial == 3:
+                #         verificar_campo(filial,'.png')
+                #     elif filial == 4:
+                #         verificar_campo(filial,'.png')
+                #     elif filial == 5:
+                #         verificar_campo(filial,'.png')
 
-                    verificar_campo('campo_observacao.png')
-                    verificar_campo('campo_ocorrencia.png')
-                    click_image('salvar_datachegada.png')
-                    for i in range(10):
-                        pyautogui.press("backspace")
-                    pyautogui.write(str(data_chegada))
-                    pyautogui.sleep(time)
-                    pyautogui.press('tab')
-                    pyautogui.write(str(data_entrega))
-                    pyautogui.sleep(time)
-                    pyautogui.press('tab')
-                    pyautogui.write(str(data_descarregamento))
-                    pyautogui.sleep(time)
-                    pyautogui.press('tab')
-                    pyautogui.write("aaa")
-                    pyautogui.sleep(time)
-                    for i in range(2):
-                        pyautogui.press("tab")
-                    pyautogui.write("111")
-                    pyautogui.sleep(time)
-                    click_image('efetuar_baixa.png')
-                    pyautogui.sleep(time)
-                    finalizar_baixa('digitar_data.png')
-                    click_image('cancelar.png')
-                    baixado = 'SIM'
-                    # atualizar_status(nf, baixado,manifesto,filial)
-                else:
-                    click_image('cancelar.png')
+                #     verificar_campo(filial,'campo_observacao.png')
+                #     verificar_campo(filial,'campo_ocorrencia.png')
+                #     click_image('salvar_datachegada.png')
+                #     for i in range(10):
+                #         pyautogui.press("backspace")
+                #     pyautogui.write(str(data_chegada))
+                #     pyautogui.sleep(time)
+                #     pyautogui.press('tab')
+                #     pyautogui.write(str(data_entrega))
+                #     pyautogui.sleep(time)
+                #     pyautogui.press('tab')
+                #     pyautogui.write(str(data_descarregamento))
+                #     pyautogui.sleep(time)
+                #     pyautogui.press('tab')
+                #     pyautogui.write("aaa")
+                #     pyautogui.sleep(time)
+                #     for i in range(2):
+                #         pyautogui.press("tab")
+                #     pyautogui.write("111")
+                #     pyautogui.sleep(time)
+                #     # click_image('efetuar_baixa.png')
+                #     # pyautogui.sleep(time)
+                #     # finalizar_baixa('digitar_data.png')
+                #     click_image('cancelar.png')
+                #     baixado = 'SIM'
+                #     # atualizar_status(nf, baixado,manifesto,filial)
+                # else:
+                #     click_image('cancelar.png')
                 
                 
                 
 
 
+print('------------------------------------')
+print('Baixando Manifestos')
 
-
-# # Remover os duplicados
 manifestos_filtrados = remover_duplicados_por_filial(resultado)
 
 # Exibir resultados
 for item in manifestos_filtrados:
     filial = item["Filial"]
     man = item["Manifesto"]
-    serie = item["serie"]
-    data_nota_fiscal = item["data_nota_fiscal"]
-    data_chegada = item["data_chegada"]
-    data_entrega = item["data_entrega"]
-    data_descarregamento = item["data_descarreg"]
-    
     #baixar por manifesto
     if man != "NAO BAIXAR":
-        print(f"Filial: {filial} serie:{serie} Manifesto: {man} data nota:{data_nota_fiscal} cheg:{data_chegada} entre:{data_entrega} desc:{data_descarregamento}")
-        baixado = 'SIM'
+        serie = item["serie"]
+        data_nota_fiscal = item["data_nota_fiscal"]
+        data_chegada = item["data_chegada"]
+        data_entrega = item["data_entrega"]
+        data_descarregamento = item["data_descarreg"]
         man = int(man)
         filial = int(filial)
+        print(f"Filial: {filial} serie:{serie} Manifesto: {man} data nota:{data_nota_fiscal} cheg:{data_chegada} entre:{data_entrega} desc:{data_descarregamento}")
+        
+
+
+        click_('ok_marcado.png')
+        click_image('cancelar.png')
+        click_('ok_marcado.png')
+        pyautogui.sleep(time)
+        click_image('cancelar.png')
+        pyautogui.sleep(time)
+        click_image('cancelar.png')
+        pyautogui.sleep(time)
+        click_image('referencia.png')
+        for i in range(10):
+            pyautogui.press("backspace")
+        pyautogui.write(str(referencia))
+        # click_image('digitar_data.png') 
+        # for i in range(10):
+        #     pyautogui.press("backspace")
+        # pyautogui.write(str(data_nota))
+        # pyautogui.sleep(time)  
+        # click_nota('digitar_nota.png')
+        # pyautogui.sleep(time)
+        # pyautogui.write(str(nf))
+        # pyautogui.sleep(time)
+        # click_image('atualizar.png')
+        # pyautogui.sleep(time)
+        # for i in range(2):
+        #     pyautogui.press('tab')
+
+
+
+
+
+
+
+
+        baixado = 'SIM'
         # atualizar_status_man(filial, man, baixado)
 
 print('fim')

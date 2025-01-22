@@ -471,7 +471,7 @@ def login():
     #   click_image('sim_primeiro_login2.png')
     click_image('segundo_login.png')            
     pyautogui.sleep(1)
-    pyautogui.write("llima")
+    pyautogui.write("robo01")
     pyautogui.press("tab")  
     pyautogui.write("123")
     for i in range(2): 
