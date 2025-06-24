@@ -175,7 +175,7 @@ def login():
     pyautogui.sleep(1)
     pyautogui.write("llima")
     pyautogui.press("tab")  
-    pyautogui.write("123")
+    pyautogui.write("1234")
     for i in range(2): 
         pyautogui.press("enter")
     click_image('filial_1.png')
